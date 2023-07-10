@@ -1,0 +1,55 @@
+﻿@inherits LayoutComponentBase
+@inject GetSecrets secrets
+
+<PageTitle>Dream Hotel</PageTitle>
+
+<div>
+    @if (subscribed)
+    {
+        <header class="header-wrapper">
+            <NavMenu />
+        </header>
+
+        <main>
+            <article>
+                @Body
+            </article>
+        </main>
+
+
+        <Footer />
+    }
+    else
+    {
+        <h1 class="msg red">This application is still running but has been shut down!!!</h1>
+        <h2>Kindly contact Peter's soft dev team on whatsapp or mobile +2348181734574 to subscribe.</h2>
+    }
+
+</div>
+
+@code{
+    bool subscribed = false;
+    string duration => secrets.OnGet("keys", "duration");
+    string _dateHosted => secrets.OnGet("keys", "host-date"); // "mm/dd/yyyy"
+    protected override void OnInitialized()
+    {
+        CheckSubscription();
+    }
+    private void CheckSubscription()
+    {
+        if (!string.IsNullOrEmpty(duration) && !string.IsNullOrEmpty(_dateHosted))
+        {
+            double durationInDays = double.Parse(duration);
+            DateTime currDate = DateTime.Now;
+            DateTime dateHosted = DateTime.Parse(_dateHosted);
+            //double x = currDate.Subtract(dateHosted).TotalDays;
+            if (currDate.Subtract(dateHosted).TotalDays < durationInDays)
+            {
+                subscribed = true;
+            }
+        }
+        //Very important!!! Don't forget to incluyde date hosted and duration in app secrets
+        //Don't also forget to modify it when clients subscribe
+        //The date is in format "mm/dd/yyyy"
+    }
+}

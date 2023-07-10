@@ -1,0 +1,72 @@
+﻿@page "/booked-food"
+@inject IKitchenControl kc
+@inject NavigationManager navigationManager
+
+@if (Orders.Count > 0)
+{
+    <section class="dynamic-table">
+        <div class="table">
+            <div class="table-header">
+                <h3>Ordered Food</h3>
+            </div>
+            <div class="table-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S / N</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Order Reference</th>
+                            <th>Food Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Amount Paid</th>
+                            <th>Image</th>
+                            <th>Date</th>
+                            <th>Verify Pay</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Orders)
+                        {
+                            var food = allFoods.Find(f => f.Id == order.KitchenId);
+                            if (food != null && food.Id != "")
+                            {
+                                foodCount++;
+                                <tr>
+                                    <td>@foodCount</td>
+                                    <td>@order.Email</td>
+                                    <td>@order.Mobile</td>
+                                    <td>@order.Reference</td>
+                                    <td>@food.Name</td>
+                                    <td>@order.Amount</td>
+                                    <td>@order.Quantity</td>
+                                    <td><strong>&#8358; @(order.Amount * order.Quantity) </strong></td>
+                                    <td><img src="@food.ImagePath"/></td>
+                                    <td>@order.Date.ToString("MMM d, yyyy hh:mm tt")"</td>
+                                    <td @onclick="(() => Verify(order.Reference))"><button class="main-btn">Verify</button></td>
+                                </tr>
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+}
+
+@code {
+    private List<KitchenOrder> Orders = new();
+    private List<Food> allFoods = new();
+    int foodCount = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        allFoods = kc.ReadAll().Result;
+        Orders = (await kc.ReadAllKitchenOrder()).OrderByDescending(o => o.Date).ToList<KitchenOrder>();
+    }
+    private void Verify(string reference)
+    {
+        navigationManager.NavigateTo($"/view-payments/{reference}");
+    }
+}

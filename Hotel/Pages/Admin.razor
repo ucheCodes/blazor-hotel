@@ -1,0 +1,465 @@
+﻿@page "/admin"
+@inject IKitchenControl kc
+@inject IStore store
+@inject INotificationControl notificationControl
+@inject IRoomControl rc
+@inject IBlogControl bc
+@inject SignalRService signalR
+@inject NavigationManager navigationManager
+@implements IDisposable
+
+<section id="admin" class="blog-wrapper pb-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 section-title text-center mb-5">
+                <h6>Explore Full Administrative Controls and Manage the Entire System</h6>
+                <div class="book">
+                    <select @onchange="SelectChanged" class="form-select">
+                        <option value="0" selected>Select What to do</option>
+                        <option value="1">Lodge a new customer</option>
+                        <option value="2">Add Room</option>
+                        <option value="3">Add New Food</option>
+                        <option value="4">Create a new Blog Post</option>
+                        <option value="5">Create room category</option>
+                        <option value="6">View Registered Customers</option>
+                        <option value="7">View Ordered foods</option>
+                        <option value="8">View Booked and Available rooms</option>
+                        <option value="9">View Digital Payments</option>
+                    </select>
+                </div>
+            </div>
+            @if (activeSelection == 1)
+            {
+                <div class="book">
+                    <div class="book-content">
+                        <Booker RoomId="" isAdmin="true" />
+                    </div>
+                </div>
+            }
+            else if (activeSelection == 2)
+            {
+                <EditForm Model="room" OnValidSubmit="AddRoom">
+                    <div class="book">
+                        <div class="book-content">
+                            <h3>Add a Room</h3>
+                            <div class="card">
+                                <span class="msg @msgClass">@message</span>
+                                <div class="x">
+                                    <InputText @bind-Value="room.Name" maxlength="30" placeholder="Room Name, Number or Code *" type="text" class="input-name"/>
+                                </div>
+                                <div class="x">
+                                    <InputNumber  @bind-Value="room.Price" class="form-control" placeholder="Price of food"/>
+                                </div>
+                                @if (categories.Count > 0)
+                                {
+                                    <select @onchange="GetRoomPrice" class="form-select">
+                                        <option selected>Select Room Type</option>
+                                        @foreach (var item in categories)
+                                        {
+                                            <option value="@item.Key">@item.Key</option>
+                                        }
+                                    </select>
+                                }
+                                else
+                                {
+                                    <div class="x">
+                                        <select class="form-select">
+                                            <option selected>Select Room Type</option>
+                                            <option value="1">Custom Suit</option>
+                                        </select>
+                                    </div>
+                                }
+                                <div class="x">
+                                    <InputText maxlength="300" @bind-Value="room.Description" type="text" class="form-control" placeholder="Room Description" />
+                                </div>
+                                <div class="x">
+                                    <InputFile class="form-control" type="file" OnChange="@LoadFile" accept=".png,.jpg,.jpeg,.webp" placeholder="select picture of room" />
+                                </div>
+                                <div class="book-img">
+                                    <img src="@imgPath" />
+                                </div>
+                                <button type="submit" class="main-btn">Add room</button>
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+            }
+            else if (activeSelection == 3)
+            {
+                <EditForm Model="food" OnValidSubmit="AddFoodToKitchen">
+                    <div class="book">
+                        <div class="book-content">
+                            <h3>Add a Meal / Food</h3>
+                            <div class="card">
+                                <span class="msg @msgClass">@message</span>
+                                <div class="x">
+                                    <InputText maxlength="30" @bind-Value="food.Name" placeholder="Name of Food" type="text" class="input-name" />
+                                </div>
+                                <div class="x">
+                                    <InputNumber  @bind-Value="food.Price" class="form-control" placeholder="Price of food"/>
+                                </div>
+                                <div class="x">
+                                    <InputText maxlength="100" @bind-Value="food.Desc" type="text" class="form-control" placeholder="Describe food briefly" />
+                                </div>
+                                <div class="x">
+                                    <InputFile class="form-control" type="file" OnChange="@LoadFile" accept=".png,.jpg,.jpeg" placeholder="select picture of food" />
+                                </div>
+                                <div class="book-img">
+                                    <img src="@imgPath" />
+                                </div>
+                                <button type="submit" class="main-btn">Add food</button>
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+            }
+            else if (activeSelection == 4)
+            {
+                <EditForm Model="blog">
+                <div class="book">
+                    <div class="book-content">
+                        <h3>Add a Blog Post</h3>
+                        <div class="card">
+                            <span class="msg @msgClass">@message</span>
+                            <div class="x">
+                                <InputText @onfocusout="(() => ValidateBlogField(blog.Title,blogFields[0]))" @bind-Value="blog.Title" maxlength="60" placeholder="Title of Blog" type="text" class="input-name"/>
+                            </div>
+                            <div class="x">
+                                <InputText @onfocusout="(() => ValidateBlogField(blog.Description,blogFields[1]))" type="text" @bind-Value="blog.Description" maxlength="200" class="form-control" placeholder="Brief Blog Description" />
+                            </div>
+                            <div class="x">
+                                <InputText @onfocusout="(() => ValidateBlogField(blog.Tag,blogFields[2]))" type="text" @bind-Value="blog.Tag" maxlength="45" class="form-control" placeholder="add search tag" />
+                            </div>
+                            <div class="x">
+                                <InputText @onfocusout="(() => ValidateBlogField(blog.Category,blogFields[3]))" type="text" @bind-Value="blog.Category" maxlength="20" class="form-control" placeholder="add category text e.g kitchen" />
+                            </div>
+                            <div class="x">
+                                    <InputFile type="file" class="form-control" accept=".png,.jpg,.jpeg" OnChange="@LoadFile" placeholder="select picture of Blog" />
+                            </div>
+@*                            <div class="x">
+                                <InputTextArea @bind-Value="Body" @onfocusout="(() => ValidateBlogField(Body,blogFields[4]))" placeholder="Enter a detailed blog post exploring our dynamic WYSIWYG Editor"/>
+                            </div>*@
+                            <div class="book-img">
+                                <img src="@imgPath" />
+                            </div>                          
+                        </div>
+                    </div>
+                </div>
+                </EditForm>
+                <div class="x">
+                    <Editor @onfocusout="(() => ValidateBlogField(Body,blogFields[4]))" placeholder="Enter a detailed blog post exploring our dynamic WYSIWYG Editor" ApiKey="lc0y2631rhpw976319zs6x60dzg9dpd9pvysbadgvaijxarn" @bind-Value=Body @bind:event="oninput" @Conf="@editorConf" />
+                </div>
+                <div class="blog-submit-div">
+                    <button @onclick="AddBlog" type="submit" class="main-btn">Add to Blog</button>
+                </div>
+            }
+            else if(activeSelection == 5)
+            {
+                <div class="book">
+                    <div class="card">
+                        <div class="book-content">
+                            <h3>Add a room type or category</h3>
+                            <div class="card">
+                                <span class="msg @msgClass">@message</span>
+                                <div class="x">
+                                    <input maxlength="25" @bind="category" placeholder="Room Category Name e.g Royal Suite" type="text" class="input-name">
+                                </div>
+                                <div class="x">
+                                    <input @bind="categoryAmount"  placeholder="Room Category Price" type="number" class="input-name">
+                                </div>
+                                <button @onclick="AddCategory" class="main-btn">Add</button>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </div>
+</section>
+
+@code {
+    int activeSelection = 0;
+    private Dictionary<string, object> editorConf = new Dictionary<string, object>{
+        {"toolbar", "undo redo | bold italic | bullist numlist"},
+        {"width", 400}
+    };
+    private string Body = "";
+    string imgPath = "./images/room/point3d-commercial-imaging-ltd-GUno-FetWJM-unsplash.jpg";
+    public Food food { get; set; } = new();
+    public Room room { get; set; } = new();
+    public BlogData blog { get; set; } = new();
+    List<string> blogFields = new List<string>() { "The title", "The description", "The tag", "The category", "The body" };
+    private string message = "";
+    private string msgClass = "";
+    private string category = "";
+    private int categoryAmount = 0;
+    private HubConnection? hubConnection => signalR.HubConnection;
+    List<KeyValuePair<string, int>> categories = new();
+    protected override void OnInitialized()
+    {
+        var data = store.State().EditValue;
+        switch (data?.kvp.Key)
+        {
+            case 0:
+                activeSelection = 1;
+                break;
+            case 2:
+                activeSelection = 2;
+                room = JsonConvert.DeserializeObject<Room>(data.kvp.Value) ?? new Room();
+                imgPath = room.ImagePath;
+                break;
+            case 3:
+                activeSelection = 3;
+                food = JsonConvert.DeserializeObject<Food>(data.kvp.Value) ?? new Food();
+                imgPath = food.ImagePath;
+                break;
+            default:
+                activeSelection = 1;
+                break;
+        }
+        ReadCategory();
+        store.AddStateChangedAction(() => { StateHasChanged(); });
+    }
+    private void ValidateBlogField(string value, string field)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            message = $"{field} field must not be empty.";
+            msgClass = "red";
+        }
+        else
+        {
+            message = string.Empty;
+            msgClass = string.Empty;
+        }
+    }
+    private void GetRoomPrice(ChangeEventArgs e)
+    {
+        string value = e.Value?.ToString() ?? "";
+        if (value != "")
+        {
+            room.Category = value;
+            room.Price = categories.Find(c => c.Key.Equals(value)).Value;
+        }
+    }
+    private void SelectChanged(ChangeEventArgs e)
+    {
+        int.TryParse(e.Value?.ToString(), out activeSelection);
+        message = "";
+        msgClass = "";
+        if (activeSelection == 6)
+        {
+            navigationManager.NavigateTo("/customers");
+        }
+        else if (activeSelection == 7)
+        {
+            navigationManager.NavigateTo("/booked-food");
+        }
+        else if (activeSelection == 8)
+        {
+            navigationManager.NavigateTo("/booked-rooms");
+        }
+        else if (activeSelection == 9)
+        {
+            navigationManager.NavigateTo("/view-payments/id");
+        }
+        else
+        {
+            SwitchImage(activeSelection);
+        }
+    }
+    private void SwitchImage(int selected)
+    {
+        switch (selected)
+        {
+            case 2:
+                imgPath = "./images/room/point3d-commercial-imaging-ltd-GUno-FetWJM-unsplash.jpg";
+                break;
+            case 3:
+                imgPath = "./images/kitchen/food12.jpg";
+                break;
+            case 4:
+                imgPath = "./images/gallery/g4.jpg";
+                break;
+            default:
+                imgPath = "";
+                break;
+        }
+    }
+    private void AddFoodToKitchen()
+    {
+        if (imgPath != "" && !string.IsNullOrEmpty(food.Name) && food.Price > 0)
+        {
+            food.ImagePath = imgPath;
+            if(string.IsNullOrEmpty(food.Id))
+                food.Id = Guid.NewGuid().ToString();
+            var isAdded = kc.Create(food);
+            if (isAdded.Result)
+            {
+                message = "data upload success!";
+                msgClass = "green";
+                string notifMsg = $"A new food {food.Name} was added to the kitchen. Kindly check it out ";
+                bool is4Admin = false;
+                string department = "kitchen";
+                var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
+                if (isNotified.Result)
+                {
+                    hubConnection.SendAsync("Notify", "A new notification is added");
+                }
+                food = new Food();
+                navigationManager.NavigateTo("/kitchen");
+            }
+        }
+        else
+        {
+            message = "Image file and other fields must not be empty";
+            msgClass = "red";
+        }
+    }
+    private void AddRoom()
+    {
+        if (imgPath != "" && !string.IsNullOrEmpty(room.Name) && room.Price > 0)
+        {
+            room.ImagePath = imgPath;
+            if (string.IsNullOrEmpty(room.Id))
+                room.Id = Guid.NewGuid().ToString();
+            var isAdded = rc.Create(room);
+            if (isAdded.Result)
+            {
+                message = "data upload success!";
+                msgClass = "green";
+                string notifMsg = $"A new room {room.Name} was added to the room gallery. Kindly check it out ";
+                bool is4Admin = false;
+                string department = "room";
+                var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
+                if (isNotified.Result)
+                {
+                    hubConnection.SendAsync("Notify", "A new notification is added");
+                }
+                room = new Room();
+                navigationManager.NavigateTo("/rooms");
+            }
+        }
+        else
+        {
+            message = "Image file and other fields must not be empty";
+            msgClass = "red";
+        }
+    }
+    private void AddBlog()
+    {
+        if (!string.IsNullOrEmpty(blog.Title) && !string.IsNullOrEmpty(blog.Description) &&
+        !string.IsNullOrEmpty(Body) && !string.IsNullOrEmpty(blog.Category) && !string.IsNullOrEmpty(blog.Tag))
+        {
+            blog.Id = Guid.NewGuid().ToString();
+            blog.ImagePath = imgPath;
+            blog.Date = DateTime.Now;
+            blog.Body = Body;
+            var isAdded = bc.Create(blog);
+            if (isAdded.Result)
+            {
+                message = "data upload success!";
+                msgClass = "green";
+                string notifMsg = $"A new blog post {blog.Title} was added by admin. Kindly check it out ";
+                bool is4Admin = false;
+                string department = "blog";
+                var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
+                if (isNotified.Result)
+                {
+                    hubConnection.SendAsync("Notify", "A new notification is added");
+                }
+                navigationManager.NavigateTo($"/blog-post/{blog.Id}");
+                blog = new BlogData();
+            }
+        }
+        else
+        {
+            message = "input fields must not be empty";
+            msgClass = "red";
+        }
+    }
+    private void AddCategory()
+    {
+        if (!string.IsNullOrEmpty(category) && categoryAmount > 0)
+        {
+            var isAdded = rc.AddCategory(category, categoryAmount); 
+            if (isAdded.Result)
+            {
+                categories.Add(new KeyValuePair<string, int>(category,categoryAmount));
+                message = "category added successfully.";
+                msgClass = "green";
+                categoryAmount = 0;
+                category = string.Empty;
+            }
+        }
+        else
+        {
+            message = "The category field must not be empty or price value of zero";
+            msgClass = "red";
+        }
+    }
+    private void ReadCategory()
+    {
+        var cat = rc.ReadAllCategory();
+        categories = cat.Result;
+    }
+    public void Dispose()
+    {
+        store.SetEditingValue(0, string.Empty);
+        store.RemoveStateChangedAction(() => { StateHasChanged(); });
+    }
+
+    //File upload management
+    [Inject]
+    private IWebHostEnvironment? _environment { get; set; }
+    private long maxFileSize = 1024 * 1024 * 5;
+    private List<string> errors = new();
+    private IBrowserFile? file;
+    
+
+    private async void LoadFile(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+        string relativePath = await CaptureFile();
+        imgPath = relativePath;
+        message = "";
+    }
+    private async Task<string> CaptureFile()
+    {
+        if (file == null)
+        {
+            return "";
+        }
+        string path = "";
+        try
+        {
+            if (_environment != null)
+            {
+                var uploadPath = Path.Combine(_environment.WebRootPath, "Upload");
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+                string newFilename = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
+                path = Path.Combine(uploadPath, newFilename);
+
+                string fileExtension = Path.GetExtension(file.Name);
+                string relativePath = Path.Combine("Upload", newFilename);
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+                return Path.Combine("./", relativePath);
+            }
+            return "";
+
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"File : {file.Name} Error : {ex.Message}");
+            throw;
+        }
+
+    }
+}

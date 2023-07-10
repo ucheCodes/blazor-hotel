@@ -1,0 +1,181 @@
+﻿@page "/view-payments/{id}"
+@inject IStore store
+@inject IPaystackControl pc
+@inject HttpClient httpClient
+@inject GetSecrets secrets
+@implements IDisposable
+
+<section>
+    <div class="col-sm-12 section-title text-center book-select">
+        <h6>Manage Transactions</h6>
+        <select @onchange="ToggleTransaction">
+            <option value="all">View all payments</option>
+            <option value="success">View all successful payments</option>
+            <option value="fail">View all failed payments</option>
+            <option value="pending">View all abandoned payments</option>
+            <option value="rooms">View all rooms payments</option>
+            <option value="kitchen">View all kitchen payments</option>
+        </select>
+    </div>
+    <span class="msg @msgClass">@message</span>
+    @if (transactionsInfo.Count > 0)
+    {
+        message = "";
+        <DynamicTables TableTitle="@title" SkipHeaderNames="HeaderNames" TableItems="transactionsInfo" InitializeSortByTime=true />
+    }
+    else
+    {
+        message = "No Verified Transaction yet!!! Try again in a few minutes";
+        msgClass = "red";
+    }
+</section>
+@code {
+    [Parameter]
+    public string Id { get; set; } = "";
+    List<PaystackTransaction>transactions = new();
+    List<TransactionInfo> TransactionsInfo = new();
+    List<TransactionInfo> transactionsInfo = new();
+    string paystackSecretKey => secrets.OnGet("keys", "paystack-secret-key");
+    int index = 0;
+    string message = "";
+    string msgClass = "";
+    private string title => "Digital Payments : " + transactionsInfo.Count;
+    public List<string> HeaderNames { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        var trans = pc.GetPaystackTransactions().Result;
+        transactions = trans.Where(x => !x.IsVerified).ToList<PaystackTransaction>();
+        TransactionsInfo = await pc.GetAllTransactionInfo();
+        if (Id != "" && Id != "id")
+        {
+            transactionsInfo = TransactionsInfo.Where(t => t.Reference.Equals(Id)).ToList();
+        }
+        else
+        {
+            transactionsInfo = TransactionsInfo;
+        }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (transactions.Count > 0)
+            {
+                message = "Verifying recent transactions in the background ... please wait";
+                msgClass = "red";
+                await AutoVerifyTransaction(transactions);
+            }
+        }
+    }
+
+    private void ToggleTransaction(ChangeEventArgs e)
+    {
+        string value = e.Value?.ToString()?? "";
+        switch (value)
+        {
+            case "success":
+                transactionsInfo = TransactionsInfo.Where(t => t.Status == "success").OrderByDescending(x => x.Date).ToList();
+                break;
+            case "fail":
+                transactionsInfo = TransactionsInfo.Where(t => t.Status == "failed").OrderByDescending(x => x.Date).ToList();
+                break;
+            case "pending":
+                transactionsInfo = TransactionsInfo.Where(t => t.Status == "abandoned").OrderByDescending(x => x.Date).ToList();
+                break;
+            case "rooms":
+                transactionsInfo = TransactionsInfo.Where(t => t.Department == "booked-room").OrderByDescending(x => x.Date).ToList();
+                break;
+            case "kitchen":
+                transactionsInfo = TransactionsInfo.Where(t => t.Department == "kitchen").OrderByDescending(x => x.Date).ToList();
+                break;
+            default:
+                transactionsInfo = TransactionsInfo;
+                break;
+        }
+    }
+    private async Task AutoVerifyTransaction(List<PaystackTransaction> transactions)
+    {
+        if (index < transactions.Count)
+        {
+            message = "unverified transactions are processing in the background, please wait";
+            msgClass = "red";
+            var currentTransaction = transactions[index];
+            TransactionInfo transactionInfo = new();
+            if (!string.IsNullOrEmpty(paystackSecretKey) && !string.IsNullOrEmpty(currentTransaction.Reference))
+            {
+                using (var request = new HttpRequestMessage(HttpMethod.Get, "https://api.paystack.co/transaction/verify/" + currentTransaction.Reference))
+                {
+                    try
+                    {
+                        request.Headers.Add("Authorization", $"Bearer {paystackSecretKey}");
+
+                        var response = await httpClient.SendAsync(request);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string responseContent = await response.Content.ReadAsStringAsync();
+                            if (responseContent != null)
+                            {
+                                dynamic responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent) ?? "";
+                                var data = responseObject.data;
+                                transactionInfo = new TransactionInfo()
+                                    {
+
+                                        Reference = data.reference,
+                                        Amount = data.amount / 100,
+                                        Domain = data.domain,
+                                        Status = data.status,
+                                        Bank = data.authorization.bank,
+                                        Bin = data.authorization.bin,
+                                        CardBrand = data.authorization.brand,
+                                        CardExpiry = $"{data.authorization.exp_month} {data.authorization.exp_year}",
+                                        AccountName = data.authorization.account_name,
+                                        CardLastFourDigits = data.authorization.last4,
+                                        Email = data.customer.email,
+                                        Date = currentTransaction.Date,
+                                        Department = currentTransaction.Department,
+                                        AccessCode = currentTransaction.AccessCode,
+                                        Mobile = currentTransaction.Mobile
+
+                                    };
+                                TransactionsInfo.Add(transactionInfo);
+                                transactionsInfo.Add(transactionInfo);
+                                var isTrue = await pc.AddTransactionInfoToDatabase(transactionInfo);
+                                //When any is deleted, delete also in the transaction db
+                                currentTransaction.IsVerified = true;
+                                var isAdded = await pc.AddPaystackTransaction(currentTransaction);
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+            }
+            index++;
+            await AutoVerifyTransaction(transactions);
+        }
+        else
+        {
+            message = "";
+            msgClass = "";
+        }
+    }
+    public void Dispose()
+    {
+
+        if (TransactionsInfo.Count > 0)
+        {
+            List<TransactionInfo> delTrans = TransactionsInfo.Where(t => (DateTime.Now.Subtract(t.Date)).TotalDays >= 30).ToList();
+            if (delTrans.Count > 0)
+            {
+                foreach (var trans in delTrans)
+                {
+                    pc.DeleteTransactionInfo(trans.Reference);
+                    pc.DeletePaystackTransaction(trans.Reference);
+                }
+            }
+        }
+    }
+}
+

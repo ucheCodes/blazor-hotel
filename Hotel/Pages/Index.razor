@@ -1,0 +1,185 @@
+﻿@page "/"
+@inject IStore store
+@inject IUserControl userControl
+@inject ProtectedLocalStorage localStorage
+@inject GetSecrets secrets
+@inject SignalRService signalR
+@inject INotificationControl nc
+@implements IDisposable
+
+<PageTitle>Dream Hotel @store.State().Counter.Count</PageTitle>
+<Banner slides="slides" sliderAnimation="@sliderAnimation" showBooker="true"/>
+<About/>
+<Rooms/>
+<Services/>
+<Team/>
+<Gallery/>
+<Prices/>
+<Blog limit="6"/>
+
+
+
+@code{
+    public string sliderAnimation { get; set; } = "zoom-in";
+    private HubConnection? hubConnection => signalR.HubConnection;
+    private List<Slide> slides = new List<Slide>
+    {
+        new Slide {
+            IsActive = true,
+            Header = "Welcome to Your Dream Hotel",
+            Caption = "Step into a world of luxury, comfort, and unparalleled hospitality. We invite"+
+                        "you to embark on a remarkable journey where your dreams come to life. From the moment you arrive,"+
+                        "our dedicated team is committed to  providing you with an extraordinary stay that exceeds your every expectation.",
+            ImagePath = "./images/slider/slide1.jpg"
+        },
+        new Slide {
+            IsActive = false,
+            Header = "Indulge in opulence as you experience our meticulously designed accommodations",
+            Caption = "Indulge in opulence as you experience our meticulously designed accommodations,"+
+                        "adorned with exquisite decor and equipped with state-of-the-art amenities."+
+                        "Immerse yourself in the tranquility of our elegant rooms, where"+
+                        "every detail has been carefully curated to create a haven of relaxation.",
+            ImagePath = "./images/slider/slide3.jpg" },
+            new Slide {
+            IsActive = false,
+             Header = "Savor culinary delights in our renowned restaurant",
+            Caption = "Savor culinary delights in our renowned restaurant, where our"+
+                        "talented chefs craft a symphony of flavors using only the finest"+
+                        "ingredients. Whether you desire a romantic candlelit dinner or a casual"+
+                        "gathering with friends, our diverse menus cater to every palate.",
+            ImagePath = "./images/slider/slide6.jpg" },
+            new Slide {
+            IsActive = false,
+            Header = "Unwind and Experience Adventure with Our Culture Rich Facilities",
+            Caption = "For those seeking adventure, our hotel is ideally situated in a vibrant"+
+            " and culturally rich location. Explore the local attractions, immerse yourself in the"+
+            "bustling city life, or simply relax by the poolside and soak up the sun.",
+            ImagePath = "./images/slider/slide2.jpg" },
+            new Slide {
+            IsActive = false,
+            Header = "Step into a world of Comfort, luxury & unparalleled hospitality",
+            Caption = "Unwind and rejuvenate in our luxurious spa, where expert therapists will pamper you"+
+            "with a range of indulgent treatments. Let the soothing ambiance and expert touch melt away your stress"+
+            "leaving you feeling refreshed and revitalized.",
+            ImagePath = "./images/slider/slide5.jpg" },
+    };
+    protected override async Task OnInitializedAsync()
+    {
+        var users = await userControl.ReadAll();
+        store.AddCustomers(users);
+        await Task.Delay(1);
+        hubConnection.On<string>("Notification", UpdateSignalRCountNotification);
+        store.AddStateChangedAction(() => { StateHasChanged(); });
+    }
+    public void Dispose()
+    {
+        store.RemoveStateChangedAction(() => { StateHasChanged(); });
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await GetUserFromCookie();
+            GetNotificationCount();
+        }
+    }
+    private async Task GetUserFromCookie()
+    {       
+        try
+        {
+            var result = await localStorage.GetAsync<string>("active-user");
+            var result2 = result.ToString();
+            var value = result.Value;
+            if (!string.IsNullOrEmpty(value))
+            {
+                var user = await userControl.Read(value ?? "");
+                if (user != null && !string.IsNullOrEmpty(user.Id))
+                {
+                    Authenticate(user);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            string error = e.Message;
+        }
+    }
+    private void Authenticate(Users user)
+    {
+        string status = "user";
+        string secretAdminPass = secrets.OnGet("keys", "admin");
+        string secretEmail = secrets.OnGet("keys", "email");
+        if (secretEmail.Equals(user.Email))
+        {
+            status = "admin";
+        }
+        else if (secretAdminPass.Equals(user.Email))
+        {
+            status = "super";
+        }
+        store.SetUser(user, status);
+    }
+    private void UpdateSignalRCountNotification(string message)
+    {
+        int count = store.State().Counter.Count;
+        count = count + 1;
+        store.ChangeNoticationCount(count);
+        //InvokeAsync(StateHasChanged);
+    }
+    private void GetNotificationCount()
+    {
+        var notifications = nc.ReadAll().Result;
+        var isAdmin = store.State().IsAdmin.isAdmin;
+        int count = 0;
+        if (notifications.Count > 0)
+        {
+            if (isAdmin)
+            {
+                count = notifications.Where(x => x.Date.Date.Equals(DateTime.Now.Date)).ToList().Count;
+            }
+            else
+            {
+                count = notifications.Where(x => (x.Is4Admin == false && x.Date.Date.Equals(DateTime.Now.Date))).ToList().Count;
+            }
+            if (count > 0)
+                store.ChangeNoticationCount(count);
+        }
+    }
+
+    //Add Login, staff, salary management and Payroll systems
+    //For the E - commerce, load the category list and loop it
+    //Arrange goods based on categories, give rooms for selling ads and ..
+    //Check other e - commerce and hotel domains for ideas
+    //For the E-commerce, when orders are placed,
+    //loop the orders, add it and generate print functionality.
+    //In PSN site, it should contain an areas with cards
+    //That will link to  projects, it should have a short description
+    //Also an image
+    //It should also have a link to our graphics gallery
+    //A blog section
+    //work on groove Dd slR Tsfm or Dd sl Stsfm
+    //Ldm slR tsfm or Sdm slS tsfm
+
+
+     /*
+     * Finishing Touches
+     * Modify notification count on index load
+     */
+
+
+     /*
+     * Functions of the app
+     * State of the art Hotel management app
+     * Room booking and ticketing system
+     * integrated payment system
+     * integrated receipt print functionality
+     * Integrated food restaurant ordering system
+     * staff and customer database management
+     * Full Administrative controls and priviledges
+     * Free 30 days trial
+     * Integrated customer care service with whatsapp chat
+     * Real time admin and client notifications
+     * Full functional blog with WYSIWYG Editting system
+     * CRUD and database management of the entire system
+    */
+}

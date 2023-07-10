@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "FIehwRvsiRUHnhuP3XeEJ1+fi8AuzCakeOVzprPGLJHrnwOvlss/P+wMfD6svVVK+RXNV4xJjSimkJoUswmxTg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\peter soft\\.nuget\\packages\\dbreeze\\1.107.0\\dbreeze.1.107.0.nupkg.sha512"
+  ],
+  "logs": []
+}

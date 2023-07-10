@@ -1,0 +1,200 @@
+﻿@page "/contact"
+@inject IStore store
+@inject IMailService mailService
+@inject SignalRService signalR
+@inject INotificationControl nc
+@inject GetSecrets secrets
+@inject NavigationManager navigationManager
+<section>
+    <Banner slides="slides" sliderAnimation="@sliderAnimation" />
+</section>
+<section id="contact" class="contact">
+    <div class="row">
+        <div class="desc">
+            <h3>Dream Hotel</h3>
+            <p>
+               Facere laborum delectus facilis odio! Ab soluta aspernatur illum
+               molestiae necessitatibus esse impedit beatae? Adipisci id minima ipsum, veniam, eaque
+                voluptatibus eveniet nisi enim doloribus dicta delectus eos, aspernatur dolor ullam 
+                doloremque maxime. Vitae, magnam. Magnam nihil ea ipsum error 
+            </p>
+            <div class="info">
+                <i class="fab fa-whatsapp icon"></i>
+                <div>
+                    <i>Whatsapp</i>
+                    <h5>08181734574</h5>
+                </div>
+            </div> 
+            <div class="info">
+                <i class="fas fa-phone icon"></i>
+                <div>
+                    <i>Mobile</i>
+                    <h5>08181734574</h5>
+                </div>
+            </div>     
+            <div class="info">
+                <i class="fas fa-envelope icon"></i>
+                <div>
+                    <i>Email</i>
+                    <h5>abc@xyz.hotel.com</h5>
+                </div>
+            </div> 
+            <div class="info">
+                <i class="fas fa-map-marker icon"></i>
+                <div>
+                    <i>Address</i>
+                    <h5>Ogbanga estate, Amadi-ama, PH.</h5>
+                </div>
+            </div>
+
+        </div>
+        <div class="inputs">
+            <h3>Get in touch</h3>
+            <span class="msg @msgClass">@message</span>
+            <input @bind="user.Name" placeholder="Enter full name *" type="text" class="input-name">
+            <input @onfocusout="(()=>IsEmailValid(user.Email))" @bind="user.Email" placeholder="Enter full name *" type="email" class="input-name">
+            <input  @onfocusout="(()=>IsMobileValid(user.Mobile))" @bind="user.Mobile" placeholder="Enter mobile number *" type="text" class="input-name">
+            <input @bind="title" placeholder="Subject *" type="text" class="input-name">
+            <textarea @bind="body" class="textarea" placeholder="Type your comment"></textarea>
+            <button @onclick="SendMail" class="main-btn">Submit</button>
+        </div>
+    </div>
+</section>
+
+@code {
+    public string sliderAnimation { get; set; } = "fade-in";
+    Users user = new Users();
+    private string title = "";
+    private string body = "";
+    string message = "";
+    string msgClass = "";
+    bool isMobileValid;
+    bool isEmailValid;
+    string domainName = "";
+    private HubConnection? hubConnection => signalR.HubConnection;
+    protected override void OnInitialized()
+    {
+        if (store.State().ActiveUser?.User != new Users())
+        {
+            user.Email = store.State().ActiveUser?.User.Email ?? "";
+            user.Name = store.State().ActiveUser?.User.Name ?? "";
+            user.Mobile = store.State().ActiveUser?.User.Mobile ?? "";
+        }
+        var uri = new Uri(navigationManager.Uri);
+        domainName = uri.Host;
+    }
+    private List<Slide> slides = new List<Slide>
+    {
+        new Slide {
+            IsActive = true,
+            Header = "Call us: 08181734574",
+            ImagePath = "./images/contact/call.jpg"
+        },
+        new Slide {
+            IsActive = false,
+            Header = "Send a dm : 08181734574",
+            ImagePath = "./images/contact/what1.jpg" },
+        new Slide {
+            IsActive = false,
+            Header = "Tweet us : @hotel_dream",
+            ImagePath = "./images/contact/tweet.jpg" },
+        new Slide {
+            IsActive = false,
+            Header = "We are active on Fb : @hotel_dream",
+            ImagePath = "./images/contact/fb2.jpg" },
+            new Slide {
+            IsActive = false,
+            Header = "We are active on Instagram",
+            ImagePath = "./images/contact/insta1.jpg" },
+    };
+    private async void SendMail()
+    {
+        if (!string.IsNullOrWhiteSpace(title) || !string.IsNullOrWhiteSpace(body))
+        {
+            if (IsEmailValid(user.Email) && IsMobileValid(user.Mobile))
+            {
+                string hotelEmail = secrets.OnGet("keys", "email");
+                message = "sending mail ... please wait";
+                msgClass = "red";
+                body = $"A user with name {user.Name} and email address {user.Email} sent a mail from <a href=\"https://{domainName}\">{domainName}</a>. Read below ... \n {body}";
+                var isSent = await mailService.Send("peters.soft.network@gmail.com", hotelEmail, title, body);
+                if (isSent)
+                {
+                    message = "your mail delivered safely";
+                    msgClass = "green";
+                    user = new Users();
+                    body = string.Empty;
+                    title = string.Empty;
+                    //Notifications message
+                    string notifMsg = $"you have a new mail sent from {user.Email} to your registered company's mail {hotelEmail}. Kindly check you email and respond accordingly.";
+                    bool is4Admin = true;
+                    string department = "mail";
+                    var isNotified = nc.AddNotification(notifMsg, is4Admin, department);
+                    if (isNotified.Result)
+                    {
+                        await hubConnection.SendAsync("Notify", "A new notification is added");
+                    }
+                }
+                else
+                {
+                    message = "An error occured! mail sending failed";
+                    msgClass = "red";
+                    body = string.Empty;
+                    title = string.Empty;
+                }
+            }
+        }
+        else
+        {
+            msgClass = "red";
+            message = "The subject and body fields must not be empty";
+        }
+    }
+    private bool IsEmailValid(string email)
+    {
+        string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+        Regex regex = new Regex(pattern);
+        isEmailValid = regex.IsMatch(email);
+        if (isEmailValid)
+        {
+            message = "email is valid";
+            msgClass = "green";
+        }
+        else
+        {
+            message = "email field is invalid, email must be in the form abc@xyz.com";
+            msgClass = "red";
+        }
+        return isEmailValid;
+    }
+    private bool IsMobileValid(string mobile)
+    {
+        if (!string.IsNullOrEmpty(mobile))
+        {
+            //string pattern = @"^\+(?:\d{1,3})?\d{10}$";
+            string pattern = @"^(?:\+?\d{1,3})?(?:0|\d{1,4})\d{10}$";//@"^(?:\+?\d{1,3})?\d{10}$";
+            Regex regex = new Regex(pattern);
+            if (mobile.Contains("+") || (!mobile.Contains("+") && mobile.Length == 11 && mobile.StartsWith("0")))
+            {
+                isMobileValid = regex.IsMatch(mobile);
+                if (!isMobileValid)
+                {
+                    message = "Mobile must have max of 14 characters \n" +
+                        "It may include '+' sign, country code and mobile digits";
+                    msgClass = "red";
+                }
+                else
+                {
+                    message = "Mobile number is valid";
+                    msgClass = "green";
+                }
+            }
+            else
+            {
+                message = "Mobile number is not in a correct format";
+                msgClass = "red";
+            }
+        }
+        return isMobileValid;
+    }
+}

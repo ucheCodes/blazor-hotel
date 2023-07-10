@@ -1,0 +1,143 @@
+﻿@inject IStore store;
+@inject GetSecrets secrets;
+<section id="contact" class="footer-wrapper mt-3 mt-md-0 pb-0">
+    <div class="container pb-3">
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <h5>Dream Hotel</h5>
+                <p class="ps-0">
+                Discover a realm of refined indulgence where every moment 
+                is designed to evoke a sense of awe and wonder. Immerse yourself 
+                in a world of elegance, opulence, and glamour that will leave an
+                everlasting impression, 
+                ensuring your stay is nothing short of extraordinary.
+                </p>
+                <div class="contact-info">
+                    <ul class="list-unstyled">
+                        <li><a><i class="fa fa-home me-3"></i>Dream Hotel location, PH city, Rivers state</a></li>
+                        <li><a><i class="fa fa-phone me-3"></i>+234 8181734574</a></li>
+                        <li><a><i class="fa fa-envelope me-3"></i>peters.soft.network@gmail.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5>More Links</h5>
+                <ul class="link-widget p-0">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/book">About us</a></li>
+                    <li><a href="/kitchen">Order Food</a></li>
+                    <li><a href="/blog">Blog posts</a></li>
+                    <li><a href="/rooms">Our Gallery</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5>Admin Links</h5>
+                <ul class="link-widget p-0">
+                    <li><a href="/customers">Customers</a></li>
+                    <li><a href="/booked-rooms">Rooms Booked</a></li>
+                    <li><a href="/notification">Notifications</a></li>
+                    <li><a href="/booked-food">Food ordered</a></li>
+                    <li><a href="/view-payments/id">Payments</a></li>
+                    <li><a href="/">Home</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5>Login Up info</h5>
+                <span class="msg @msgClass">@message</span>
+                <div class="form-group mb-4">
+                    <input @onblur="IsEmailValid" @bind="email" type="email" placeholder="enter authorized email here" class="form-control bg-transparent">
+                    <input @onfocusout="IsPasswordValid" @bind="pass" type="password" placeholder="enter authorized password here" class="form-control bg-transparent">
+                    <button @onclick="AddClient" class="main-btn rounded-2 mt-3 border-white text-white">Subscribe</button>
+                </div>
+                <h5>Stay Connected</h5>
+                <ul class="social-network d-flex align-items-center p-0">
+                    <li><a href="https://www.facebook.com/uche.victor.921" class="fab fa-facebook-f"></a></li>
+                    <li><a href="https://twitter.com/peters_soft" class="fab fa-twitter"></a></li>
+                    <li><a href="https://www.linkedin.com/in/peter-soft-a93b92254/" class="fab fa-linkedin"></a></li>
+                    <li><a href="https://www.instagram.com/peter_soft/" class="fab fa-instagram"></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid copyright-section">
+    <p>UI credits <a href="/">Code4Education</a>, <a href="/">CodingDesign</a> full stack dev: <a href="https://hki.softdb.com.ng/">Peter's Soft Network</a></p>
+    </div>
+</section>
+
+@code{
+    private string email = "";
+    private string pass = "";
+    private bool isEmailValid = false;
+    private bool isPasswordValid = false;
+    private string message = "";
+    private string msgClass = "";
+    private void IsEmailValid()
+    {
+        string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+        Regex regex = new Regex(pattern);
+        isEmailValid = regex.IsMatch(email);
+        if (isEmailValid)
+        {
+            message = "email is valid";
+            msgClass = "green";
+        }
+        else
+        {
+            message = "email field is invalid, email must be in the form abc@xyz.com";
+            msgClass = "red";
+        }
+    }
+    private void IsPasswordValid()
+    {
+        string pattern = @"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-+]).{6,}$";
+        Regex regex = new Regex(pattern);
+        isPasswordValid = regex.IsMatch(pass);
+        if (isPasswordValid)
+        {
+            message = "password is valid";
+            msgClass = "green";
+        }
+        else
+        {
+            message = "password must contain uppercase,lowercase,numbers and symbols";
+            msgClass = "red";
+        }
+    }
+    private void AddClient()
+    {
+        //if (isEmailValid && isPasswordValid)
+        //{
+        //    var isValidated = Validate();
+        //    if (isValidated)
+        //    {
+        //       // store.AddHotelId(email, pass);
+        //        message = "You have gained administrative priviledges";
+        //        msgClass = "green";
+        //        pass = string.Empty;
+        //        email = string.Empty;
+        //    }
+        //    else
+        //    {
+        //        message = "Incorrect Credentials, contact app developer";
+        //        msgClass = "red";
+        //    }
+        //}
+        //else
+        //{
+        //    message = "Email or password is not valid";
+        //    msgClass = "red";
+        //}
+    }
+    private bool Validate()
+    {
+        string secretPass = secrets.OnGet("keys", "password");
+        string secretAdminPass = secrets.OnGet("keys", "admin");
+        string secretEmail = secrets.OnGet("keys", "email");
+        if (secretEmail.Equals(email) && (secretPass.Equals(pass) || secretAdminPass.Equals(pass)))
+        {
+            return true;
+        }
+        return false;
+    }
+}

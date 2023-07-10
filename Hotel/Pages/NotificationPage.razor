@@ -1,0 +1,173 @@
+﻿@page "/notification"
+@inject INotificationControl notificationControl
+@inject IStore store
+@inject NavigationManager navigationManager
+
+<section class="notif">
+    <div class="container">
+        <h3>Notifications</h3>
+        @if (today.Count > 0 || older.Count > 0)
+        {
+            <span>today</span>
+            <ul class="notification-list">
+                 @foreach (var notif in today)
+                {
+                    <li @onclick="(() => ViewNotification(notif))" class="notification">
+                        <em>@notif.Date.ToString("dd MMM, yy"); @notif.Date.ToString("hh:mm tt")</em><br />
+                        @notif.Message
+                    </li>
+                }
+            </ul>
+            <button class="main-btn" @onclick="(() => {viewOlder =! viewOlder;})">View Older</button>
+            <br />
+            @if (viewOlder)
+            {
+                <span>older</span>
+                <ul class="notification-list">
+                    @foreach (var notif in older)
+                    {
+                        <li @onclick="(() => ViewNotification(notif))" class="notification">
+                            <em>@notif.Date.ToString("dd MMM, yy"); @notif.Date.ToString("hh:mm tt")</em><br />
+                            @notif.Message
+                        </li>
+                    }
+                </ul>
+            }
+        }
+        else
+        {
+        <span>today</span>
+        <ul class="notification-list">
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur, 
+                adipisicing elit.
+            </li>
+            <li class="notification">Notification 2 Facere laborum delectus facilis</li>
+            <li class="notification">Notification 3 Facere laborum delectus facilis</li>
+            <li class="notification">Notification 4 Facere laborum delectus facilis</li>
+        </ul>
+        <span>older</span>
+        <ul class="notification-list">
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur, 
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+                        <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur, 
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+                        <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur, 
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+            <li class="notification">
+                <em>Jan 25,2023 14:08pm</em><br />
+                Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit.
+            </li>
+        </ul>
+        }
+    </div>
+</section>
+
+
+@code {
+    public List<Notifications> notifications { get; set; } = new();
+    public List<Notifications> today { get; set; } = new();
+    public List<Notifications> older { get; set; } = new();
+    bool viewOlder = false;
+    protected override void OnInitialized()
+    {
+        var data = notificationControl.ReadAll();
+        if (store.State().IsAdmin.isAdmin)
+        {
+            notifications = data.Result.ToList();
+        }
+        else
+        {
+            notifications = data.Result.Where(n => n.Is4Admin == false).ToList();
+        }
+        today = notifications.Where(x => x.Date.Date.Equals(DateTime.Now.Date)).OrderByDescending(x => x.Date).ToList();
+        older = notifications.Where(x => !x.Date.Date.Equals(DateTime.Now.Date)).OrderByDescending(x => x.Date).ToList();
+    }
+    private void ViewNotification(Notifications notif)
+    {
+        switch (notif.Department)
+        {
+            case "kitchen":
+                navigationManager.NavigateTo("/kitchen");
+                break;
+            case "room":
+                navigationManager.NavigateTo("/rooms");
+                break;
+            case "booked-room":
+                navigationManager.NavigateTo("/booked-rooms");
+                break;
+            case "blog":
+                navigationManager.NavigateTo("/blog");
+                break;
+            default:
+                break;
+        }
+    }
+
+}

@@ -1,0 +1,203 @@
+﻿<section id="services" class="services-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 section-title text-center mb-5">
+                <h6>We are here for your comfort and pleasure</h6>
+                <h3>Our Awesome Services</h3>
+            </div>
+        </div>
+        <div class="row align-items-center service-item-wrap">
+            <div class="col-lg-7 p-lg-0 img-col">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab" id="conference" role="tabpanel">
+                        <img src="@activeImg" alt="services">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 position-relative">
+                <div class="service-menu-area">
+                    <ul class="nav">
+                        <li @onclick='(() => ToggleImage("spa"))'>
+                            <a class="active service-list">
+                                <span class="service-icon">
+                                    <img src="./images/services/service-icon1.webp" alt="serv1">
+                                </span>
+                                <h5>Spa, Beauty and Health</h5>
+                                <p>
+                                    <span>Spa</span> 
+                                    Unwind and rejuvenate in our luxurious spa, where expert therapists will
+                                    pamper you with a range of indulgent treatments. Let the soothing ambiance and expert touch
+                                    melt away your stress, leaving you feeling refreshed and revitalized.
+                                </p>
+                            </a>
+                        </li>
+                        <li @onclick='(() => ToggleImage("restaurant"))'>
+                            <a data-bs-toggle="tab">
+                                <span class="service-icon">
+                                    <img src="./images/services/service-icon2.webp" alt="serv1">
+                                </span>
+                                <h5>Restaurant</h5>
+                                <p>
+                                    <span>restaurant</span>
+                                    Savor culinary delights in our renowned restaurant, where our talented
+                                    chefs craft a symphony of flavors using only the finest ingredients.
+                                    Whether you desire a romantic candlelit dinner or a casual gathering
+                                    with friends, our diverse menus cater to every palate.
+                                </p>
+                            </a>
+                        </li>
+                        <li @onclick='(() => ToggleImage("swimming"))'>
+                            <a data-bs-toggle="tab">
+                                <span class="service-icon">
+                                    <img src="./images/services/service-icon3.webp" alt="serv1">
+                                </span>
+                                <h5>Swimming</h5>
+                                <p>
+                                    <span>Swimming</span> 
+                                    For those seeking adventure, our hotel is ideally situated in a 
+                                    vibrant and culturally rich location. Explore the local attractions,
+                                    immerse yourself in the bustling city life,
+                                    or simply relax by the poolside and soak up the sun.
+                                </p>
+                            </a>
+                        </li>
+                        <li @onclick='(() => ToggleImage("conference"))'>
+                            <a data-bs-toggle="tab">
+                                <span class="service-icon">
+                                    <img src="./images/services/service-icon4.webp" alt="serv1">
+                                </span>
+                                <h5>Conference</h5>
+                                <p>
+                                    <span>conference</span> 
+                                    Our state-of-the-art conference venues are thoughtfully designed
+                                    to inspire productivity and foster creativity. Equipped with the 
+                                    latest audiovisual technology and comfortable seating arrangements,
+                                    our spaces can accommodate events of various sizes,
+                                    from intimate boardroom meetings to large-scale conferences.
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="counter mt-5">
+        <div @onmouseover="EndCount" class="container">
+            <div class="row text-center">
+                <div class="col-md-3 mb-lg-0 mb-md-0 mb-5">
+                    <h1>
+                        <span id="count1"></span>@counter1+
+                    </h1>
+                    <p>Happy Clients</p>
+                </div>
+                <div class="col-md-3 mb-lg-0 mb-md-0 mb-5">
+                    <h1>
+                        <span id="count2"></span>@counter2+
+                    </h1>
+                    <p>Happy Friends</p>
+                </div>
+                <div class="col-md-3 mb-lg-0 mb-md-0 mb-5">
+                    <h1>
+                        <span id="count3"></span>@counter3+
+                    </h1>
+                    <p>Star ratings</p>
+                </div>
+                <div class="col-md-3 mb-lg-0 mb-md-0 mb-5">
+                    <h1>
+                        <span id="count4"></span>@counter4+
+                    </h1>
+                    <p>Served Breakfast</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code{
+    CancellationTokenSource? cts;
+    CancellationToken ct;
+    Dictionary<string, string> imgDict = new Dictionary<string, string>()
+    {
+        {"spa","./images/services/spa.jpg"},
+        {"restaurant","./images/services/restaurant.jpg"},
+        {"swimming","./images/services/swimming.jpg"},
+        {"conference","./images/services/conf1.jpg"},
+    };
+    private string activeImg = "./images/services/spa.jpg";//"./images/services/service1.webp";
+    private void ToggleImage(string key)
+    {
+        activeImg = imgDict[key];
+    }
+
+
+    private int counter1 = 10;
+    private int counter2 = 20;
+    private int counter3 = 50;
+    private int counter4 = 200;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cts = new CancellationTokenSource();
+        ct = cts.Token;
+        CountThrough();
+    }
+    public async Task CountThrough()
+    {
+        while (!ct.IsCancellationRequested && counter1 < 10000)
+        {
+            await Task.Delay(500, ct);
+            counter1 += 5;
+            counter2 += 3;
+            counter3 += 2;
+            counter4 += 1;
+            await InvokeAsync(() => this.StateHasChanged());
+        }
+    }
+    private void EndCount()
+    {
+        cts?.Cancel();
+        Console.WriteLine("endin ...");
+    }
+
+    private async Task AnimateCounter(int start, int end, int duration, Action<int> updateAction)
+    {
+        int current = start;
+        int range = end - start;
+        int increment = end > start ? 1 : -1;
+        int step = Math.Abs(duration / range);
+
+        while (!ct.IsCancellationRequested)
+        {
+            updateAction(current);
+            current += increment;
+            await Task.Delay(step);
+        }
+
+        updateAction(end);
+    }
+
+
+    //private async Task AnimateCounter(int start, int end, int duration, Action<int> updateAction)
+    //{
+    //    int current = start;
+    //    int range = end - start;
+    //    int increment = end > start ? 1 : -1;
+    //    int step = Math.Abs(duration / range);
+
+    //    //for (int current = start; current != end; current += increment)
+    //    //{
+    //    //    updateAction(current);
+    //    //    await Task.Delay(step);
+    //    //}
+
+    //    while (current != end)
+    //    {
+    //        updateAction(current);
+    //        await Task.Delay(step);
+    //    }
+    //    updateAction(end);
+    //}
+
+    
+}

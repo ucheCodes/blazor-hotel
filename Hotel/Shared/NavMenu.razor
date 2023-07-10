@@ -1,0 +1,104 @@
+﻿@inject IJSRuntime jsRuntime
+@inject IStore store
+@inject IUserControl userControl
+@implements IDisposable
+
+<nav class="@headerClass navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand">
+            <img src="images/hotel1.png" alt="logo" class="img-fluid">
+        </a>
+        <div id="navbarNav">
+            <ul class="navbar-nav @(isNavbarOpen ? "open" : "")">
+                <li @onclick="CloseNavBar" class="nav-item icon">
+                    <a href="#" class="nav-link"><i class="fas fa-home"></i></a>
+                </li>
+                <li @onclick="CloseNavBar" class="nav-item icon">
+                    <a href="/kitchen" class="nav-link"><i class="fas fa-utensils"></i></a>
+                </li>
+                <li @onclick="CloseNavBar" class="nav-item icon">
+                    <a href="/contact" class="nav-link"><i class="fas fa-phone"></i></a>
+                </li>
+                <li @onclick="CloseNavBar" class="nav-item icon">
+                    <a href="/rooms" class="nav-link active"><i class="fas fa-bed"></i></a>
+                </li>
+                <li @onclick="CloseNavBar" class="nav-item icon">
+                    <a href="/book/id" class="nav-link"><i class="fas fa-wallet"></i></a>
+                </li>
+                <li @onclick="CloseNavBar" class="nav-item icon">
+                    <a href="/blog" class="nav-link"><i class="fas fa-blog"></i></a>
+                </li>
+                <li @onclick="ToggleLoginShow" class="nav-item icon">
+                    <a class="nav-link"><i class="fas fa-user"></i></a>
+                </li>
+                @if (true)//store.State().IsAdmin.isAdmin
+                {
+                    <li @onclick="CloseNavBar" class="nav-item icon">
+                        <a href="/admin" class="nav-link"><i class="fas fa-user-lock"></i></a>
+                    </li>
+                    <li @onclick="CloseNotif" class="nav-item icon bell">
+                        <NavLink class="nav-link" href="/notification">
+                            <i class="fas fa-bell"></i>
+                            @if (store.State().Counter.Count > 0)
+                            {
+                                <span class="notification-counter">@store.State().Counter.Count</span>
+                            }
+                        </NavLink>
+                    </li>
+                }
+                <li class="nav-item icon">
+                    <a href="https://api.whatsapp.com/send?phone=2348181734574"><i class="fab fa-whatsapp"></i></a>
+                </li>
+            </ul>
+        </div>
+        <span class="toggle-btn icon" @onclick="ToggleNavbar">
+            <i class="fas fa-bars"></i>
+        </span>
+    </div>
+</nav>
+
+<LoginDialog Show="store.State().ShowLogin.Show"/>
+
+
+@code {
+    private string headerClass = "navbar";
+    private bool isNavbarOpen = false;
+    protected override void OnInitialized()
+    {
+        store.AddStateChangedAction(() => { StateHasChanged(); });
+    }
+    public void Dispose()
+    {
+        store.RemoveStateChangedAction(() => { StateHasChanged(); });
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await jsRuntime.InvokeVoidAsync("addScrollListener");
+        }
+    }
+
+    private void ToggleNavbar()
+    {
+        isNavbarOpen = !isNavbarOpen;
+    }
+    private void CloseNavBar()
+    {
+        if (isNavbarOpen)
+        {
+            isNavbarOpen = false;
+        }
+    }
+    private void CloseNotif()
+    {
+        store.ChangeNoticationCount(0);
+        CloseNavBar();
+    }
+    private void ToggleLoginShow()
+    {
+        store.ShowLoginDialog(true);
+        CloseNavBar();
+    }
+}
+

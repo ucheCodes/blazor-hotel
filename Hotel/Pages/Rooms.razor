@@ -1,0 +1,131 @@
+﻿@inject IRoomControl rc
+@inject NavigationManager navigationManager
+<section id="rooms" class="rooms-wrapper">
+    @if (rooms.Count == 0)
+    {
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 section-title text-center mb-5">
+                <h6>Cozy rooms for your comfort</h6>
+                <h3>Our Favourite rooms</h3>
+            </div>
+        </div>
+        <div class="row m-0">
+            <div class="col-md-4 mb-4 mb-lg-0">
+                <div class="room-items">
+                    <img src="./images/room/venice-hotel-tqwvsyL2Kd0-unsplash.jpg" alt="" class="img-fluid">
+                    <div class="room-item-wrap">
+                        <div class="room-content">
+                            <h5 class="text-white mb-lg-5 text-decoration-underline">Elegant Suit</h5>
+                            <p class="text-white">
+                                Step into a world of unrivaled elegance, opulence, and glamour in our 
+                                exquisite hotel rooms. Each room is a masterpiece of refined design, 
+                                meticulously
+                                crafted to immerse you in a realm of luxury and sophistication.
+                            </p>
+                            <p class="text-white fw-bold mt-lg-4">&#8358;200 / night</p>
+                            <a href="" class="main-btn border-white text-white mt-lg-5">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-lg-0">
+                <div class="room-items">
+                    <img src="./images/room/sasha-kaunas-67-sOi7mVIk-unsplash.jpg" alt="" class="img-fluid">
+                    <div class="room-item-wrap">
+                        <div class="room-content">
+                            <h5 class="text-white mb-lg-5 text-decoration-underline">Opulence Suit</h5>
+                            <p class="text-white">
+                                Indulge in the lavish comfort of plush furnishings, adorned with rich 
+                                fabrics and intricate details. Every element has been carefully selected
+                                to create an
+                                ambiance that exudes timeless beauty and indulgence.
+                            </p>
+                            <p class="text-white fw-bold mt-lg-4">&#8358;250 / night</p>
+                            <a href="" class="main-btn border-white text-white mt-lg-5">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-lg-0">
+                <div class="room-items">
+                    <img src="./images/room/point3d-commercial-imaging-ltd-GUno-FetWJM-unsplash.jpg" alt="" class="img-fluid">
+                    <div class="room-item-wrap">
+                        <div class="room-content">
+                            <h5 class="text-white mb-lg-5 text-decoration-underline">Glamour Suit</h5>
+                            <p class="text-white">
+                                Surrender to the allure of our sumptuous beds, adorned with the finest 
+                                linens and softest pillows, ensuring a night of unparalleled comfort and
+                                restful slumber. Wake up to breathtaking views that greet you through 
+                                floor-to-ceiling windows, casting a golden glow upon the room.
+                            </p>
+                            <p class="text-white fw-bold mt-lg-4">&#8358;300 / night</p>
+                            <a href="" class="main-btn border-white text-white mt-lg-5">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    }
+    else
+    {
+        @if (bookedRooms.Count < rooms.Count)
+        {
+         <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 section-title text-center mb-5">
+                    <h6>Cozy rooms for your comfort</h6>
+                    <h3>Available rooms</h3>
+                </div>
+            </div>
+            <div class="row m-0">
+                @foreach (var room in rooms)
+                {
+                    if (!bookedRooms.Contains(room.Id))
+                    {
+                        <div class="col-md-4 mb-4 mb-lg-0">
+                            <div class="room-items">
+                                <div class="room-img">
+                                    <img src="@room.ImagePath" alt="" class="img-fluid">
+                                </div>
+                                <div class="room-item-wrap">
+                                    <div class="room-content">
+                                        <h5 class="text-white mb-lg-5 text-decoration-underline">@room.Name</h5>
+                                        <p class="text-white">
+                                            @room.Description
+                                        </p>
+                                        <p class="text-white fw-bold mt-lg-4">&#8358;@room.Price / night</p>
+                                        <a @onclick="(() => BookRoom(room.Id))" class="main-btn border-white text-white mt-lg-5">Book Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        count++;
+                        if (count == 9) break;
+                    }
+                }
+            </div>
+         </div>
+        }
+    }
+</section>
+
+@code{
+    private List<Room> rooms = new();
+    private List<string> bookedRooms = new();
+    int count = 0;
+    protected async override Task OnInitializedAsync()
+    {
+        var data = await rc.ReadAll();
+        bookedRooms = rc.GetBookedRooms().Result;
+        rooms = data.OrderByDescending(r => r.Date).ToList<Room>();
+    }
+    private void BookRoom(string id)
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+            navigationManager.NavigateTo($"/book/{id}");
+        }
+    }
+}

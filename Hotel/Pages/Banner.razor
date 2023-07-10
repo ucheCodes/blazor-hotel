@@ -1,0 +1,174 @@
+﻿@inject IRoomControl rc
+@inject NavigationManager navigationManager
+
+<section id="home" class="banner-wrapper ps-0">
+    <div class="swiper mySwiper">
+        @foreach (var slide in slides)
+        {
+            <div class="slider @(slide.IsActive ?  @sliderAnimation : "")" style="background-image: url('@slide.ImagePath')">
+                <div class="slide-caption text-center">
+                    <div>
+                        <h1>@slide.Header</h1>
+                        <p>
+                            @*@slide.Caption*@
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="swiper-pagination">
+            @for (int i = 0; i < slides.Count; i++)
+            {
+                int _i = i;
+                <span class="@((i == activeIndex) ? "active" : "")" @onclick="(() => SetActiveIndex(_i))"></span>
+            }
+        </div>
+    </div>
+    @if (showBooker)
+    {
+        <div class="container booking-area">
+            <span class="price">price: &#8358;@selectedRoom.Price / night</span>
+            <div class="row form">
+                <div class="col-lg mb-3 mb-lg-0">
+                    <input type="date" class="form-control" placeholder="Date" />
+                </div>
+                <div class="col-lg mb-3 mb-lg-0">
+                    <select @onchange="CategoryChanged" class="form-select">
+                        <option selected>Select Room Type</option>
+                        @if (categories.Count > 0)
+                        {
+                            @foreach (var item in categories)
+                            {
+                                <option value="@item.Key">@item.Key</option>
+                            }
+                        }
+                        else
+                        {
+                            <option>Luxury Comfort</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg mb-3 mb-lg-0">
+                    <select @onchange="selectedRoomChanged" class="form-select">
+                        <option>Choose Room</option>
+                        @foreach (var room in roomCategorized)
+                        {
+                            if (!bookedRooms.Contains(room.Id))
+                            {
+                                isRoomAvailable = true;
+                                <option value="@room.Id">@room.Name</option>
+                            }
+                        }
+                        @if (!isRoomAvailable)
+                        {
+                            <option value="0">No available room.</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg mb-3 mb-lg-0">
+                    <button @onclick="BookRoom" type="submit" class="main-btn rounded-2 px-lg-3">Preview</button>
+                </div>
+            </div>
+        </div>
+    }
+</section>
+
+
+@code {
+    [Parameter]
+    public List<Slide> slides { get; set; } = new List<Slide>();
+    [Parameter]
+    public string sliderAnimation { get; set; } = "";
+    [Parameter]
+    public bool showBooker { get; set; } = true;
+    public Room selectedRoom { get; set; } = new();
+    private int activeIndex = 0;
+    private Timer? timer;//modified because of nullable error
+    private List<Room> rooms = new();
+    private List<Room> roomCategorized = new();
+    public List<KeyValuePair<string, int>> categories { get; set; } = new();
+    bool isRoomAvailable = false;
+    List<string> bookedRooms = new();
+    protected override void OnInitialized()
+    {
+        timer = new Timer(_ => NextSlide(), null, 15000, 15000); // Initial delay: 3000ms, Interval: 3000ms
+        rooms = rc.ReadAll().Result;
+        bookedRooms = rc.GetBookedRooms().Result;
+        categories = rc.ReadAllCategory().Result;
+    }
+
+    private void SetActiveIndex(int index)
+    {
+        activeIndex = index;
+        setActiveSlide(index);
+        InvokeAsync(StateHasChanged);
+    }
+    private void setActiveSlide(int currentIndex)
+    {
+        for (int i = 0; i < slides.Count; i++)
+        {
+            if (i == currentIndex)
+            {
+                slides[i].IsActive = true;
+            }
+            else
+            {
+                slides[i].IsActive = false;
+            }
+        }
+    }
+
+    private void PrevSlide()
+    {
+        activeIndex--;
+        if (activeIndex < 0)
+        {
+            activeIndex = slides.Count - 1;
+        }
+        setActiveSlide(activeIndex);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void NextSlide()
+    {
+        activeIndex++;
+        if (activeIndex >= slides.Count)
+        {
+            activeIndex = 0;
+        }
+        setActiveSlide(activeIndex);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void CategoryChanged(ChangeEventArgs e)
+    {
+        string value = e.Value?.ToString() ?? "";
+        if (!string.IsNullOrEmpty(value))
+        {
+            roomCategorized = rooms.Where(x => x.Category == value).ToList();
+            if (roomCategorized.Count == 0)
+            {
+                roomCategorized = rooms;
+            }
+        }
+        else
+        {
+            roomCategorized = rooms;
+        }
+    }
+    private void selectedRoomChanged(ChangeEventArgs e)
+    {
+        string id = e.Value?.ToString() ?? "";
+        selectedRoom = rooms.Find(r => r.Id == id) ?? new Room();
+    }
+    private void BookRoom()
+    {
+        string id = selectedRoom.Id;
+        if (!string.IsNullOrEmpty(id))
+        {
+            navigationManager.NavigateTo($"/book/{id}");
+        }
+    }
+}
+
+

@@ -1,0 +1,111 @@
+﻿@inject IRoomControl rc
+
+<section id="price" class="price-wrapper">
+    @if (categories.Count > 0)
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 section-title text-center mb-5">
+                    <h6>Best and affordable prices for you</h6>
+                    <h3>Our Pricing</h3>
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var category in categories)
+                {
+                    if (count < 8)
+                    {
+                       <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card p-4 text-center rounded-3">
+                            <h5 class="text-decoration-underline mb-4">@category.Key</h5>
+                            <ul class="list-unstyled">
+                                <li><p>24/7 Concierge</p></li>
+                                <li><p>Fine Dining Restaurants</p></li>
+                                <li><p>Fitness Cente</p></li>
+                                <li><p>Unlimited Internet</p></li>
+                            </ul>
+                            <hr><h3>&#8358; @category.Value <sub class="fs-6 fw-normal">/night</sub></h3>
+                           <a href="/book/id" class="main-btn">Book Now</a>
+                        </div>
+                      </div> 
+                    }
+                    count++;
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 section-title text-center mb-5">
+                    <h6>Best and affordable prices for you</h6>
+                    <h3>Our Pricing</h3>
+                </div>
+            </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card p-4 text-center rounded-3">
+                    <h5 class="text-decoration-underline mb-4">Elegant</h5>
+                    <ul class="list-unstyled">
+                        <li><p>24/7 Concierge</p></li>
+                        <li><p>Fine Dining Restaurants</p></li>
+                        <li><p>Fitness Cente</p></li>
+                        <li><p>Unlimited Internet</p></li>
+                    </ul>
+                    <hr><h3>&#8358;200<sub class="fs-6 fw-normal">/night</sub></h3>
+                    <a class="main-btn">Book Now</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card p-4 text-center rounded-3">
+                    <h5 class="text-decoration-underline mb-4">Opulence</h5>
+                    <ul class="list-unstyled">
+                        <li><p>Private Chauffeur</p></li>
+                        <li><p>Music Concert</p></li>
+                        <li><p>24/7 Room Service</p></li>
+                        <li><p>High-Speed Internet</p></li>
+                    </ul>
+                    <hr><h3>&#8358;250<sub class="fs-6 fw-normal">/night</sub></h3>
+                    <a class="main-btn">Book Now</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card p-4 text-center rounded-3">
+                    <h5 class="text-decoration-underline mb-4">Glamour</h5>
+                    <ul class="list-unstyled">
+                        <li><p>Exclusive Club Lounge</p></li>
+                        <li><p>Music Concert</p></li>
+                        <li><p>VIP and Concierge Floor</p></li>
+                        <li><p>Luxury Shopping</p></li>
+                    </ul>
+                    <hr><h3>&#8358;300<sub class="fs-6 fw-normal">/night</sub></h3>
+                    <a class="main-btn">Book Now</a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card p-4 text-center rounded-3">
+                    <h5 class="text-decoration-underline mb-4">Normal</h5>
+                    <ul class="list-unstyled">
+                        <li><p>Unlimited Wi-fi</p></li>
+                        <li><p>Music Concert</p></li>
+                        <li><p>Restaurant</p></li>
+                        <li><p>Luxury Shopping</p></li>
+                    </ul>
+                    <hr><h3>&#8358;150<sub class="fs-6 fw-normal">/night</sub></h3>
+                    <a class="main-btn">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</section>
+
+@code{
+    public List<KeyValuePair<string, int>> categories { get; set; } = new();
+    int count = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await rc.ReadAllCategory();
+    }
+}

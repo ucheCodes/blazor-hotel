@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Ot7bGX3dFnqD7FK58/C92/VZoKR6hPzrwKokV4FTiBCO5STSoGysD8mnOuuFRt+E5MauqLwl9nY9vp/xJnp8fw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\State\\Store.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\peter soft\\.nuget\\packages\\dbreeze\\1.107.0\\dbreeze.1.107.0.nupkg.sha512",
+    "C:\\Users\\peter soft\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,443 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\peter soft\\source\\repos\\Hotel\\Hotel\\Hotel.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\peter soft\\source\\repos\\Hotel\\Controller\\Controller.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Controller\\Controller.csproj",
+        "projectName": "Controller",
+        "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Controller\\Controller.csproj",
+        "packagesPath": "C:\\Users\\peter soft\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Controller\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\peter soft\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj"
+              },
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\MailService\\MailService.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\MailService\\MailService.csproj"
+              },
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\Models.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\Models.csproj"
+              },
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\State\\Store.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\State\\Store.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.405\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj",
+        "projectName": "Database",
+        "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj",
+        "packagesPath": "C:\\Users\\peter soft\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\peter soft\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "DBreeze": {
+              "target": "Package",
+              "version": "[1.107.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.405\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\peter soft\\source\\repos\\Hotel\\Hotel\\Hotel.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Hotel\\Hotel.csproj",
+        "projectName": "Hotel",
+        "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Hotel\\Hotel.csproj",
+        "packagesPath": "C:\\Users\\peter soft\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Hotel\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\peter soft\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\Controller\\Controller.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Controller\\Controller.csproj"
+              },
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj"
+              },
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\MailService\\MailService.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\MailService\\MailService.csproj"
+              },
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\Models.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\Models.csproj"
+              },
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\State\\Store.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\State\\Store.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Client": {
+              "target": "Package",
+              "version": "[3.1.7, )"
+            },
+            "TinyMCE.Blazor": {
+              "target": "Package",
+              "version": "[1.0.4, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.405\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\peter soft\\source\\repos\\Hotel\\MailService\\MailService.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\peter soft\\source\\repos\\Hotel\\MailService\\MailService.csproj",
+        "projectName": "MailService",
+        "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\MailService\\MailService.csproj",
+        "packagesPath": "C:\\Users\\peter soft\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\MailService\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\peter soft\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "NETCore.MailKit": {
+              "target": "Package",
+              "version": "[2.1.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.405\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\Models.csproj",
+        "projectName": "Models",
+        "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\Models.csproj",
+        "packagesPath": "C:\\Users\\peter soft\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\peter soft\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.405\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\peter soft\\source\\repos\\Hotel\\State\\Store.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\peter soft\\source\\repos\\Hotel\\State\\Store.csproj",
+        "projectName": "Store",
+        "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\State\\Store.csproj",
+        "packagesPath": "C:\\Users\\peter soft\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\State\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\peter soft\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Database\\Database.csproj"
+              },
+              "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\Models.csproj": {
+                "projectPath": "C:\\Users\\peter soft\\source\\repos\\Hotel\\Models\\Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.405\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

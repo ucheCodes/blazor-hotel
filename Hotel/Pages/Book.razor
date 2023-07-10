@@ -1,0 +1,113 @@
+﻿@page "/book/{Id}"
+@inject IJSRuntime jsRuntime
+
+<section id="book" class="book">
+    <div class="container">
+        <div class="row">
+            <div class="book-content">
+                <Booker RoomId="@Id" isAdmin="false"/>
+            </div>
+            <div class="about">
+                <h3>About us</h3>
+                <p>
+                    At our Dream Hotel, we understand that personalized service is the key
+                    to creating unforgettable memories. Our attentive staff is dedicated
+                    to anticipating your every need, ensuring that your stay with us is
+                    nothing short of extraordinary.
+
+                    We eagerly await the opportunity to welcome you and provide an
+                    unforgettable experience at our Dream Hotel. Your comfort and
+                    satisfaction are our top priorities, as we strive to create moments
+                    that will linger in your heart long after you depart.
+
+                    Welcome to our Dream Hotel – where dreams become reality.
+                </p>
+                <h3>Our Mission</h3>
+                <p>
+                    At our Dream Hotel, we understand that personalized service is the key
+                    to creating unforgettable memories. Our attentive staff is dedicated
+                    to anticipating your every need, ensuring that your stay with us is
+                    nothing short of extraordinary.
+
+                    We eagerly await the opportunity to welcome you and provide an
+                    unforgettable experience at our Dream Hotel. Your comfort and
+                    satisfaction are our top priorities, as we strive to create moments
+                    that will linger in your heart long after you depart.
+
+                    Welcome to our Dream Hotel – where dreams become reality.
+                </p>
+                <h3>Our Vision</h3>
+                <p>
+                    At our Dream Hotel, we understand that personalized service is the key
+                    to creating unforgettable memories. Our attentive staff is dedicated
+                    to anticipating your every need, ensuring that your stay with us is
+                    nothing short of extraordinary.
+
+                    We eagerly await the opportunity to welcome you and provide an
+                    unforgettable experience at our Dream Hotel. Your comfort and
+                    satisfaction are our top priorities, as we strive to create moments
+                    that will linger in your heart long after you depart.
+
+                    Welcome to our Dream Hotel – where dreams become reality.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "";
+    public string FullName { get; set; } = "Ade Williams";
+    string hotelName = "Dream Hotels, PH City";
+    string hotelAddr = "25, dream hotel road, PHC, rivers state, Nigeria";
+    int price = 200;
+    int roomNo = 34;
+
+    private void PrintReceipt()
+    {
+        /*
+        StringBuilder receiptBuilder = new StringBuilder();
+        receiptBuilder.AppendLine($"Customer's full name: {FullName}");
+        receiptBuilder.AppendLine($"room number: {roomNo}");
+        receiptBuilder.AppendLine($"Amount paid: {price}");
+        receiptBuilder.AppendLine($"Date checked in: {DateTime.UtcNow}");
+        receiptBuilder.AppendLine($"Due Date check out: {DateTime.Now}");
+        */
+        // Add other form field values to the receipt
+        /*
+        StringBuilder receiptBuilder = new StringBuilder();
+        receiptBuilder.AppendLine("<div class=\"receipt\">");
+        receiptBuilder.AppendLine("<h3>Receipt</h3>");
+        receiptBuilder.AppendLine($"<p>Customer's full name: {FullName}</p>");
+        receiptBuilder.AppendLine($"<p>Room number: {roomNo}</p>");
+        receiptBuilder.AppendLine($"<p>Total amount: ${price}</p>");
+        receiptBuilder.AppendLine($"<p>Date Checked in: ${DateTime.UtcNow}</p>");
+        receiptBuilder.AppendLine($"<p>Due Date: ${DateTime.Now}</p>");
+        receiptBuilder.AppendLine("</div>");
+        */
+        StringBuilder receiptBuilder = new StringBuilder();
+        receiptBuilder.AppendLine("<div style=\"background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 4px;\">");
+        receiptBuilder.AppendLine("<h2 style=\"font-size: 24px; color: #021832;\">Receipt</h2>");
+        receiptBuilder.AppendLine($"<h3 style=\"font-size: 21px; color: #caa169;\">{hotelName}</h3>");
+        receiptBuilder.AppendLine($"<em style=\"font-size: 16px; color: #021832;\">Address: {hotelAddr}</em>");
+        receiptBuilder.AppendLine("<hr style=\"color: #0000ff;\"></hr>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Customer's full name: {FullName}</p>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Room number: {roomNo}</p>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Total amount: &#8358;{price}</p>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Date Checked in: {DateTime.UtcNow}</p>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Due Date: {DateTime.Now}</p>");
+        receiptBuilder.AppendLine("<p> </p>");
+        receiptBuilder.AppendLine($"<em style=\"font-size: 16px; text-align:justify; color: #021832;\">Thank you for patronizing {hotelName}</em>");
+        receiptBuilder.AppendLine("</div>");
+
+        string receiptContent = receiptBuilder.ToString();
+
+
+            // Example: Open new window with receipt content
+            var jsCode = $"window.open().document.write(`{receiptContent}`);";
+            jsRuntime.InvokeVoidAsync("eval", jsCode);
+        }
+
+}

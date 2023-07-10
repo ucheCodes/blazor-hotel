@@ -1,0 +1,318 @@
+﻿@page "/kitchen"
+@inject IKitchenControl kc
+@inject NavigationManager navigationManager
+@inject IStore store
+@implements IDisposable
+
+<section id="kitchen" class="kitchen">
+    <Banner slides="slides" sliderAnimation="@sliderAnimation" showBooker="false" />
+    @if (foods.Count == 0)
+    {
+        <div class="container">
+            <div class="row">
+            <h3>Our Favourite Dishes</h3>
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food1.jpg">
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food2.jpg"  />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food3.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food4.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food5.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food6.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food7.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food8.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food9.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food10.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food11.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+            <div class="food">
+                <div class="img">
+                    <img src="./images/kitchen/food12.jpg" />
+                </div>
+                <div class="admin">
+                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-edit"></i>
+                </div>
+                <p>&#8358; 500</p>
+                <h5>Burger Pie</h5>
+                <button class="main-btn">Buy Now</button>
+            </div>
+        </div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <h3>Our Favourite Dishes</h3>
+                 @foreach (var food in foods)
+                {
+                    <div class="food">
+                        <div class="img">
+                            <img src="@food.ImagePath">
+                        </div>
+                        @if (store.State().IsAdmin.isAdmin)
+                        {
+                            <div class="admin">
+                                <i @onclick="(() => {deleteId = food.Id; deleteName = food.Name; showDialog = true;})" class="fas fa-trash"></i>
+                                <i @onclick="(() =>{Edit(food);})" class="fas fa-edit"></i>
+                            </div>
+                        }
+                        <p>&#8358; @food.Price</p>
+                        <h5>@food.Name</h5>
+                        <button @onclick="(()=> {ShowPayDialog = true; orderId = food.Id; orderAmount = food.Price;})" class="main-btn">Buy Now</button>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+@if (showDialog)
+{
+    <section class="dialog">
+        <div class="container">
+            <span @onclick="CloseDialog" class="close">x</span>
+            <span>Do you want to delete @deleteName permanently?</span>
+            <button @onclick="(() => Delete(deleteId))" class="main-btn">Confirm Delete</button>
+        </div>
+    </section>
+}
+@if (ShowPayDialog)
+{
+   <PayDialog KitchenId="@orderId" Amount="@orderAmount" Show="@ShowPayDialog"/> 
+}
+
+
+@code {
+    public string sliderAnimation { get; set; } = "fade-in";
+    List<Food> foods = new List<Food>();
+    private bool showDialog = false;
+    private bool ShowPayDialog = false;
+    string orderId = "";
+    int orderAmount = 0;
+    private string deleteId = "";
+    private string deleteName = "";
+    [Inject]
+    private IWebHostEnvironment? _environment { get; set; }
+    protected override void OnInitialized()
+    {
+        foods = kc.ReadAll().Result;
+        //CreateSlideImages();
+        store.AddStateChangedAction(() => { StateHasChanged(); });
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender) CreateSlideImages();
+    }
+    private void CloseDialog()
+    {
+        showDialog = false;
+        deleteId = string.Empty;
+        deleteName = string.Empty;
+    }
+    private void Delete(string id)
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+            var isDel = kc.Delete(id);
+            if (isDel.Result)
+            {
+                var f = foods.Find(x => x.Id == id);
+                DeleteImage(f?.ImagePath ?? "");
+                foods.Remove(f ?? new());
+                CloseDialog();
+            }
+        }
+    }
+    private List<Slide> slides = new List<Slide>
+    {
+        new Slide {
+            IsActive = true,
+            Header = "Enjoy a symphony of tasty delicacies made from the finest ingredients",
+            ImagePath = "./images/kitchen/food9.jpg"
+        },
+        new Slide {
+            IsActive = false,
+            Header = "Enjoy a symphony of tasty delicacies made from the finest ingredients",
+            ImagePath = "./images/kitchen/food6.jpg" },
+        new Slide {
+            IsActive = false,
+            Header = "Enjoy a symphony of tasty delicacies made from the finest ingredients",
+            ImagePath = "./images/kitchen/food10.jpg" },
+        new Slide {
+            IsActive = false,
+            Header = "Enjoy a symphony of tasty delicacies made from the finest ingredients",
+            ImagePath = "./images/kitchen/food11.jpg" },
+            new Slide {
+            IsActive = false,
+            Header = "Enjoy a symphony of tasty delicacies made from the finest ingredients",
+            ImagePath = "./images/kitchen/food12.jpg" },
+    };
+    private void CreateSlideImages()
+    {
+        if (foods.Count > 0)
+        {
+            slides = new List<Slide>();
+            int count = 0;
+            bool isActive = true;
+            foreach (var food in foods)
+            {
+                if (count != 0) isActive = false;
+                Slide s = new Slide()
+                    {
+                        Header = food.Name,
+                        Caption = food.Desc,
+                        ImagePath = food.ImagePath,
+                        IsActive = isActive
+
+                };
+                slides.Add(s);
+                if (count > 5) break;
+                count++;
+            }
+        }
+    }
+    private void Edit(Food food)
+    {
+        store.SetEditingValue(3, JsonConvert.SerializeObject(food));
+        navigationManager.NavigateTo("/admin");
+    }
+    public void Dispose()
+    {
+        store.RemoveStateChangedAction(() => { StateHasChanged(); });
+    }
+    public void DeleteImage(string filePath)
+    {
+        if (_environment != null)
+        {
+            string imagePath = Path.Combine(_environment.WebRootPath, filePath);
+
+            if (File.Exists(imagePath))
+            {
+                File.Delete(imagePath);
+            }
+        }
+    }
+}

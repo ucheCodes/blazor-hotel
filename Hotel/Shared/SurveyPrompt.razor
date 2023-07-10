@@ -1,0 +1,66 @@
+﻿<div class="swiper mySwiper">
+    <div class="slider active" style="background-image: url(./images/room/room1.webp)">
+        <div class="slide-caption text-center">
+            <div>
+                <h1>Welcome to Your Dream Hotel</h1>
+                <p>
+                    Step into a world of luxury, comfort, and unparalleled hospitality. We invite
+                    you to embark on a remarkable journey where your dreams come to life. From the moment you arrive,
+                    our dedicated team is committed to
+                    providing you with an extraordinary stay that exceeds your every expectation.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="slider" style="background-image: url(./images/slider/slider1.webp)">
+        <div class="slide-caption text-center">
+            <div>
+                <h1>Welcome to Your Dream Hotel</h1>
+                <p>
+                    Indulge in opulence as you experience our meticulously designed accommodations,
+                    adorned with exquisite decor and equipped with state-of-the-art amenities.
+                    Immerse yourself in the tranquility of our elegant rooms, where
+                    every detail has been carefully curated to create a haven of relaxation.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="slider" style="background-image: url(./images/slider/slider2.webp)">
+        <div class="slide-caption text-center">
+            <div>
+                <h1>Welcome to Your Dream Hotel</h1>
+                <p>
+                    Savor culinary delights in our renowned restaurant, where our
+                    talented chefs craft a symphony of flavors using only the finest
+                    ingredients. Whether you desire a romantic candlelit dinner or a casual
+                    gathering with friends, our diverse menus cater to every palate.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="slider" style="background-image: url(./images/slider/slider2.webp)">
+        <div class="slide-caption text-center">
+            <div>
+                <h1>Welcome to Your Dream Hotel</h1>
+                <p>
+                    Unwind and rejuvenate in our luxurious spa, where expert therapists will
+                    pamper you with a range of indulgent treatments. Let the soothing ambiance
+                    and expert touch melt away your stress, leaving you feeling refreshed a
+                    nd revitalized.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="swiper-pagination">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+@code {
+    // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    public string? Title { get; set; }
+}

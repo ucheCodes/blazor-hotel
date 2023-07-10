@@ -1,0 +1,240 @@
+﻿@inject IUserControl userControl
+@inject IStore store
+@inject GetSecrets secrets;
+@inject ProtectedLocalStorage localStorage
+
+@if (Show)
+{
+    <section class="dialog">
+        <div class="container">
+            <span @onclick="CloseDialog" class="close">x</span>
+            <span class="msg @msgClass">@message</span>
+            @if (isRegistered)
+            {
+                <h3>Login</h3>
+                <div>
+                    <input @onfocusout="IsLoginEmailValid" @bind="loginEmail" maxlength="40" placeholder="type registered email address" type="email" />
+                    <input @onfocusout="IsLoginPasswordValid" @bind="loginPass" maxlength="21" placeholder="enter registered password" type="password" />
+                    <span @onclick="(() => {isRegistered =! isRegistered;})">Don't have an account? <a>click here to sign up.</a> </span>
+                    <button @onclick="LogUser" type="submit" class="main-btn">Submit</button>
+                </div>
+            }
+            else
+            {
+                <h3>Sign Up</h3>
+                <EditForm Model="user" OnValidSubmit="SignUSer">
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                    <ValidationSummary></ValidationSummary>
+                    <InputText @bind-Value="user.Name" maxlength="80" placeholder="Enter Full name" type="text" />
+                    <InputText @onfocusout="(() => IsMobileValid(user.Mobile))" @bind-Value="user.Mobile" maxlength="16" placeholder="Enter valid mobile number" type="text" />
+                    <InputText @onfocusout="IsEmailRegistered" @bind-Value="user.Email" maxlength="60" placeholder="enter valid email address" type="email" />
+                    <InputText @bind-Value="user.Password" maxlength="21" placeholder="enter strong password" type="password" />
+                    <InputText @bind-Value="user.Password2" maxlength="21" placeholder="confirm strong password" type="password" />
+                    <span @onclick="(() => {isRegistered =! isRegistered;})"><a>Back to login</a> </span>
+                    <button type="submit" class="main-btn">Submit</button>
+                </EditForm>
+            }
+        </div>
+    </section>
+}
+@if (showDialog)
+{
+    <section class="dialog">
+        <div class="container">
+            <span @onclick="(()=>{showDialog = false;})" class="close">x</span>
+            <span>@dialogMsg</span>
+        </div>
+    </section>
+}
+
+@code{
+    private Users user = new Users();
+    string message = "Enter your valid info for ease of communication";
+    string msgClass = "";
+    [Parameter]
+    public bool Show { get; set; } = false;
+    private bool isRegistered = true;
+    private bool isEmailRegistered = false;
+    private bool isMobileValid = false;
+    private string loginEmail = "";
+    private string loginPass = "";
+    private bool isLoginEmailValid;
+    private bool isLoginPasswordValid;
+    private string dialogMsg = "";
+    private bool showDialog = false;
+    private void CloseDialog()
+    {
+        //Show = false;
+        store.ShowLoginDialog(false);
+    }
+    private void IsEmailRegistered()
+    {
+        var users = store.State().Customers;
+        if (users?.ListCustomers.Count > 0)
+        {
+            isEmailRegistered = users.ListCustomers.Any(x =>
+                x.Email.ToLower().Equals(user.Email.ToLower()));
+            if (isEmailRegistered)
+            {
+                message = "This email has been registered by another user.";
+                msgClass = "red";
+            }
+            else { message = string.Empty; }
+        }
+    }
+    private void LogUser()
+    {
+        if (isLoginEmailValid && isLoginPasswordValid)
+        {
+            var users = store.State().Customers;
+            if (users?.ListCustomers.Count > 0)
+            {
+                var userFound = users.ListCustomers.Find(x =>
+                    x.Email.ToLower().Equals(loginEmail.ToLower()) &&
+                    x.Password.Equals(loginPass));
+                if (!string.IsNullOrEmpty(userFound?.Id))
+                {
+                    Authenticate(userFound);
+                    message = "You are logged in. Kindly close this dialog.";
+                    msgClass = "green";
+                    SaveUserToCookie(userFound.Id);
+                }
+                else
+                {
+                    message = "data not found in database. Kindly sign up.";
+                }
+            }
+        }
+        else
+        {
+            IsLoginEmailValid();
+            IsLoginPasswordValid();
+        }
+    }
+    private void SignUSer()
+    {
+        IsEmailRegistered();
+        if (!isEmailRegistered && isMobileValid)
+        {
+            user.Id = Guid.NewGuid().ToString();
+            var isCreated = userControl.Create(user);
+            if (isCreated.Result)
+            {
+                message = $"Congratulations {user.Name}, your sign up was successful!!!";
+                msgClass = "green";
+                Authenticate(user);
+                SaveUserToCookie(user.Id);
+                user = new Users();
+                CloseDialog();
+                dialogMsg = message;
+                showDialog = true;
+            }
+        }
+        else
+        {
+            message = "Invalid Mobile number!!!";
+            msgClass = "red";
+        }
+    }
+    private async void SaveUserToCookie(string userId)
+    {
+        if (!string.IsNullOrEmpty(userId))
+        {
+            try
+            {
+                await localStorage.SetAsync("active-user", userId); 
+            }
+            catch (Exception)
+            {
+                message = "";
+            }
+        }  
+    }
+    private void Authenticate(Users user)
+    {
+        string status = "user";
+        string secretAdminPass = secrets.OnGet("keys", "admin");
+        string secretEmail = secrets.OnGet("keys", "email");
+        if (secretEmail.Equals(user.Email))
+        {
+            status = "admin";
+
+        }
+        else if (secretAdminPass.Equals(user.Email))
+        {
+            status = "super";
+        }
+        store.SetUser(user, status);
+    }
+    private void IsLoginEmailValid()
+    {
+        string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+        Regex regex = new Regex(pattern);
+        isLoginEmailValid = regex.IsMatch(loginEmail);
+        if (!isLoginEmailValid)
+        {
+            message = "email field is invalid, email must be in the form abc@xyz.com";
+            msgClass = "red";
+        }
+        else
+        {
+            if (!isLoginPasswordValid)
+            {
+                message = "password must be at least 8 letters which consists of letters, numbers and symbols";
+                msgClass = "red";
+            }
+            else { message = ""; }
+        }
+
+    }
+    private void IsMobileValid(string mobile)
+    {
+        if (!string.IsNullOrEmpty(mobile))
+        {
+            //string pattern = @"^\+(?:\d{1,3})?\d{10}$";
+            string pattern = @"^(?:\+?\d{1,3})?(?:0|\d{1,4})\d{10}$";//@"^(?:\+?\d{1,3})?\d{10}$";
+            Regex regex = new Regex(pattern);
+            if (mobile.Contains("+") || (!mobile.Contains("+") && mobile.Length == 11 && mobile.StartsWith("0")))
+            {
+                isMobileValid = regex.IsMatch(mobile);
+                if (!isMobileValid)
+                {
+                    message = "Mobile must have max of 14 characters \n" +
+                        "It may include '+' sign, country code and mobile digits";
+                    msgClass = "red";
+                }
+                else
+                {
+                    message = "Mobile number is valid";
+                    msgClass = "green";
+                }
+            }
+            else
+            {
+                message = "Mobile number is not in a correct format";
+                msgClass = "red";
+            }
+        }
+    }
+    private void IsLoginPasswordValid()
+    {
+        string pattern = @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"; //@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-+]).{6,}$";
+        Regex regex = new Regex(pattern);
+        isLoginPasswordValid = regex.IsMatch(loginPass);
+        if (!isLoginPasswordValid)
+        {
+            message = "password must be at least 8 letters which consists of letters, numbers and symbols";
+            msgClass = "red";
+        }
+        else
+        {
+            if (!isLoginEmailValid)
+            {
+                msgClass = "red";
+                message = "email field is invalid, email must be in the form abc@xyz.com";
+            }
+            else { message = ""; }
+        }
+
+    }
+}

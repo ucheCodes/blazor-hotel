@@ -1,0 +1,22 @@
+﻿@if (Show)
+{
+    <section class="dialog">
+        <div class="container">
+            <span @onclick="CloseDialog" class="close">x</span>
+            <span>You'll be booked with the following Identity</span>
+            <span>@Name</span>
+            <span>@Email</span>
+            <button class="btn">Confirm</button>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public string Name { get; set; } = string.Empty;
+    [Parameter]
+    public string Email { get; set; } = string.Empty;
+    [Parameter]
+    public bool Show { get; set; } = true;
+
+}

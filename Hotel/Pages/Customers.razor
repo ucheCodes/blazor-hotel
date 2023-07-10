@@ -1,0 +1,24 @@
+﻿@page "/customers"
+@inject IStore store
+@inject IUserControl userControl
+@if (customers.Count > 0)
+{
+    <DynamicTables TableTitle="@title" SkipHeaderNames="HeaderNames" TableItems="customers" InitializeSortByTime=false/>
+}
+else
+{
+    <div>
+        <p>No registered customer on this platform yet.</p>
+    </div>
+}
+
+@code {
+    List<Users> customers = new ();
+    private string title = "Registered Customers";
+    public List<string> HeaderNames { get; set; } = new() { "Id", "Password", "Password2" };
+    protected override void OnInitialized()
+    {
+        //customers = store.State().Customers?.ListCustomers ?? new();
+        customers = userControl.ReadAll().Result;
+    }
+}

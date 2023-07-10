@@ -1,0 +1,345 @@
+﻿@inject IRoomControl rc
+@inject IStore store
+@inject IPaystackControl pc
+@inject INotificationControl nc
+@inject SignalRService signalR
+@inject GetSecrets secrets
+@inject IMailService mailService
+@inject NavigationManager navigationManager
+
+<EditForm Model="data" OnValidSubmit="ConfirmBooking">
+    <h3>Book a room</h3>
+    <span class="msg @msgClass">@message</span>
+    <div class="card">
+        <div class="x">
+            <InputText @bind-Value="data.Name" maxlength="80" placeholder="Customer's full name *" type="text" class="input-name" />
+        </div>
+        <div class="x">
+            <InputText @onfocusout="(()=>IsEmailValid(data.Email))" maxlength="80" @bind-Value="data.Email" placeholder="Customer's Email *" type="text" class="input-name" />
+        </div>
+        <div class="x">
+            <InputText @onfocusout="(()=>IsMobileValid(data.Mobile))" @bind-Value="data.Mobile" maxlength="14" placeholder="Customer's valid mobile number *" type="text" class="input-name" />
+        </div>
+        <div class="x">
+            <input @bind="data.BookingDate" type="date" class="form-control" placeholder="Check out Date" />
+        </div>
+        <div class="x">
+            <select @onchange="CategoryChanged" class="form-select">
+                @if (selectedRoom.Category != "" && roomSelectionChangeCount == 0)
+                {
+                    <option value="@selectedRoom.Category">@selectedRoom.Category</option>
+                }
+                else
+                {
+                    <option selected>Select Room Type</option>
+                }
+                @if (categories.Count > 0)
+                {
+                    @foreach (var item in categories)
+                    {
+                        <option value="@item.Key">@item.Key</option>
+                    }
+                }
+                else
+                {
+                    <option>Luxury Comfort</option>
+                }
+            </select>
+        </div>
+        <div class="x">
+            <select @onchange="selectedRoomChanged" class="form-select">
+                @if (selectedRoom.Name != "" && roomSelectionChangeCount == 0)
+                {
+                    <option value="@selectedRoom.Id">@selectedRoom.Name</option>
+                }
+                else
+                {
+                    <option>Choose Room</option>
+                }
+                @foreach (var room in roomCategorized)
+                {
+                    @if (!bookedRooms.Contains(room.Id))
+                    {
+                        <option value="@room.Id">@room.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div>
+            <label>Price: &#8358;@selectedRoom.Price / night</label>
+        </div>
+        <div class="book-img">
+            <img src="@selectedRoom.ImagePath" />
+        </div>
+        <div class="x">
+            <InputSelect @bind-Value="data.AdultCount" class="form-select">
+                <option selected>Number of Adults</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </InputSelect>
+        </div>
+        <div class="x">
+            <InputSelect @bind-Value="data.ChildrenCount" class="form-select">
+                <option>Number of Children</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </InputSelect>
+        </div>
+        <div class="x">
+            <InputNumber @bind-Value="data.NumberOfDays" placeholder="Number of days booked *" class="input-name" />
+        </div>
+        @if(selectedRoom.Price > 0)
+        {
+            <button type="submit" class="main-btn">Confirm Booking</button>
+        }
+    </div>
+</EditForm>
+
+@if (showDialog)
+{
+    <section class="dialog">
+        <div class="container">
+            <span @onclick="CloseDialog" class="close">x</span>
+            <span>@dialogMsg</span>
+            <button hidden="@hideDialogBtn" @onclick="Proceed" class="main-btn">Proceed</button>
+        </div>
+    </section>
+}
+
+@code {
+    bool showDialog = false;
+    bool hideDialogBtn = false;
+    string dialogMsg = "";
+    Room selectedRoom = new Room();
+    List<Room> rooms = new();
+    List<Room> roomCategorized = new();
+    List<KeyValuePair<string, int>> categories = new();
+    List<string> bookedRooms = new();
+    BookingData data = new BookingData();
+    int roomSelectionChangeCount = 0;
+    string message = "";
+    bool isEmailValid = false;
+    bool isMobileValid = false;
+    string msgClass = "";
+    string domainName = "";
+    [Parameter]
+    public string RoomId { get; set; } = "";
+    [Parameter]
+    public bool isAdmin { get; set; } = false;
+    private string paystackPublicKey = "";
+    private string paystackSecretKey = "";
+    private HubConnection? hubConnection => signalR.HubConnection;
+    protected override void OnInitialized()
+    {
+        rooms = rc.ReadAll().Result;
+        categories = rc.ReadAllCategory().Result;
+        bookedRooms = rc.GetBookedRooms().Result;
+        var uri = new Uri(navigationManager.Uri);
+        domainName = uri.Host;
+        if (!string.IsNullOrWhiteSpace(RoomId) && RoomId != "id")
+        {
+            selectedRoom = rooms.Find(r => r.Id == RoomId) ?? new Room();
+            data.Room = selectedRoom;
+        }
+        else { selectedRoom.ImagePath = "./images/room/point3d-commercial-imaging-ltd-GUno-FetWJM-unsplash.jpg"; ; }
+        if (store.State().ActiveUser?.User != new Users())
+        {
+            data.Email = store.State().ActiveUser?.User.Email ?? "";
+            data.Name = store.State().ActiveUser?.User.Name ?? "";
+            data.Mobile = store.State().ActiveUser?.User.Mobile ?? "";
+        }
+    }
+    private void CategoryChanged(ChangeEventArgs e)
+    {
+        string value = e.Value?.ToString() ?? "";
+        if (!string.IsNullOrEmpty(value))
+        {
+            roomCategorized = rooms.Where(x => x.Category == value).ToList();
+            if (roomCategorized.Count == 0)
+            {
+                roomCategorized = rooms;
+            }
+            data.Room.Category = value;
+        }
+        else
+        {
+            roomCategorized = rooms;
+        }
+        roomSelectionChangeCount++;
+    }
+    private void selectedRoomChanged(ChangeEventArgs e)
+    {
+        string id = e.Value?.ToString() ?? "";
+        selectedRoom = rooms.Find(r => r.Id == id) ?? new Room();
+        data.Room = selectedRoom;
+        roomSelectionChangeCount++;
+    }
+    private void CloseDialog()
+    {
+        showDialog = false;
+    }
+    private void ConfirmBooking()
+    {
+        if (IsEmailValid(data.Email) && IsMobileValid(data.Mobile))
+        {
+            data.Id = Guid.NewGuid().ToString();
+            data.Date = DateTime.Now;
+            var d = data;
+            showDialog = true;
+            if (isAdmin)
+            {
+                dialogMsg = $"Charge client {data.Room.Price * data.NumberOfDays} Naira " +
+                                 $"for {data.NumberOfDays} nights \n Click Proceed to save data";
+            }
+            else
+            {
+                dialogMsg = $"You will be charged {data.Room.Price * data.NumberOfDays} Naira " +
+                 $"for {data.NumberOfDays} nights \n Would you like to proceed and pay?";
+            }
+        }
+        else
+        {
+            message = "Email and mobile number fields must be valid";
+            msgClass = "red";
+        }
+    }
+    private void Proceed()
+    {
+        if (isAdmin)
+        {
+            AddDataToDatabase();
+            showDialog = false;
+            navigationManager.NavigateTo("booked-rooms");
+        }
+        else
+        {
+            PaystackCheckout();
+        }
+    }
+    private void AddDataToDatabase()
+    {
+        var isAdded = store.AddBookingDataToDatabase(data);
+        if (isAdded.Result)
+        {
+            //Add booked room to db to show it has been booked
+            rc.AddBookedRooms(data.Room.Id, true);
+            selectedRoom = new();
+            selectedRoom.ImagePath = "./images/room/point3d-commercial-imaging-ltd-GUno-FetWJM-unsplash.jpg";
+            message = "Thank you for patronizing us!";
+            msgClass = "green";
+            //Notifications message
+            string notifMsg = $"A room {data.Room.Name} was booked by {data.Name} with email {data.Email}";
+            bool is4Admin = true;
+            string department = "booked-room";
+            var isNotified = nc.AddNotification(notifMsg, is4Admin, department);
+            if (isNotified.Result)
+            {
+                hubConnection.SendAsync("Notify", "A new notification is added");
+            }
+            data = new();
+        }
+    }
+    private async void PaystackCheckout()
+    {
+        paystackPublicKey = secrets.OnGet("keys", "paystack-public-key");
+        paystackSecretKey = secrets.OnGet("keys", "paystack-secret-key");
+        dialogMsg = "Authorizing Transaction, please wait ...";
+        hideDialogBtn = true;
+        var paystackData = await pc.Checkout(data.Email, (data.Room.Price * data.NumberOfDays), paystackPublicKey, paystackSecretKey);
+        if (paystackData is Newtonsoft.Json.Linq.JObject && !string.IsNullOrEmpty(paystackData.ToString()) && paystackData.status == true)
+        {
+            var d = paystackData.data;
+            string paystackAuthorizationUrl = d.authorization_url;
+            string paystackAccessCode = d.access_code;
+            string paystackReference = d.reference;
+            navigationManager.NavigateTo(paystackAuthorizationUrl);
+
+            PaystackTransaction pt = new()
+                {
+                    Url = paystackAuthorizationUrl,
+                    AccessCode = paystackAccessCode,
+                    Reference = paystackReference,
+                    Department = "booked-room",
+                    TransactionId = data.Id,
+                    Date = DateTime.Now,
+                    IsVerified = false
+                };
+            data.Reference = paystackReference;
+            AddPayTrans(pt);
+            showDialog = false;
+        }
+        else
+        {
+            dialogMsg = "Transaction failed to authorize! Try again!!!";
+            showDialog = false;
+        }
+    }
+    private async void AddPayTrans(PaystackTransaction pt)
+    {
+        var isAdded = pc.AddPaystackTransaction(pt);
+
+        if (isAdded.Result)
+        {
+            string hotelEmail = secrets.OnGet("keys", "email");
+            string mailBody = $"<p>Your Room booking order with PayStack's reference Id {pt.Reference} is well received. THANK YOU!!! for keeping us in business. </p><p>Click <a href=\"https://{domainName}\">{domainName}</a> We hope you'd keep patronizing us.</p>";
+            //mail for clients
+            await mailService.Send("peters.soft.network@gmail.com", data.Email, "New Room Order received at " + domainName, mailBody);
+            //for hotel
+            if(!string.IsNullOrEmpty(hotelEmail))
+                await mailService.Send("peters.soft.network@gmail.com", hotelEmail, "New Room Order received at " + domainName, $"A room was booked by {data.Email}, kindly verify payment.");
+        }
+        AddDataToDatabase();
+    }
+
+    private bool IsEmailValid(string email)
+    {
+        string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+        Regex regex = new Regex(pattern);
+        isEmailValid = regex.IsMatch(email);
+        if (isEmailValid)
+        {
+            message = "email is valid";
+            msgClass = "green";
+        }
+        else
+        {
+            message = "email field is invalid, email must be in the form abc@xyz.com";
+            msgClass = "red";
+        }
+        return isEmailValid;
+    }
+    private bool IsMobileValid(string mobile)
+    {
+        if (!string.IsNullOrEmpty(mobile))
+        {
+            //string pattern = @"^\+(?:\d{1,3})?\d{10}$";
+            string pattern = @"^(?:\+?\d{1,3})?(?:0|\d{1,4})\d{10}$";//@"^(?:\+?\d{1,3})?\d{10}$";
+            Regex regex = new Regex(pattern);
+            if (mobile.Contains("+") || (!mobile.Contains("+") && mobile.Length == 11 && mobile.StartsWith("0")))
+            {
+                isMobileValid = regex.IsMatch(mobile);
+                if (!isMobileValid)
+                {
+                    message = "Mobile must have max of 14 characters \n" +
+                        "It may include '+' sign, country code and mobile digits";
+                    msgClass = "red";
+                }
+                else
+                {
+                    message = "Mobile number is valid";
+                    msgClass = "green";
+                }
+            }
+            else
+            {
+                message = "Mobile number is not in a correct format";
+                msgClass = "red";
+            }
+        }
+        return isMobileValid;
+    }
+}

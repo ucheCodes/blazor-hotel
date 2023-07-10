@@ -1,0 +1,185 @@
+﻿@page "/booked-rooms"
+@inject IStore store
+@inject IRoomControl rc
+@inject IJSRuntime jsRuntime
+@inject GetSecrets secrets
+@inject NavigationManager navigationManager
+
+<div class="col-sm-12 section-title text-center book-select">
+    <h6>Manage Booked Rooms</h6>
+    <select @bind="toggleOptions">
+        <option value="booked">View booked rooms</option>
+        <option value="available">See available rooms</option>
+    </select>
+</div>
+
+@if (bookedData.Count > 0 && toggleOptions == "booked")
+{
+    <section class="dynamic-table">
+        <div class="table">
+            <div class="table-header">
+                <h3>Booked Rooms</h3>
+            </div>
+            <div class="table-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Reference</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Lodging Date</th>
+                            <th>Number of days</th>
+                            <th>Amount Paid</th>
+                            <th>Room Id</th>
+                            <th>Room Picture</th>
+                            <th>Print Receipt</th>
+                            <th>Check out</th>
+                            <th>Verify</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            @foreach (var b in bookedData)
+                            {
+                                    <tr>
+                                        <td>@b.Name</td>
+                                        <td>@b.Email</td>
+                                        <td>@b.Mobile</td>
+                                        @if (string.IsNullOrEmpty(b.Reference))
+                                        {
+                                            <td>Nil</td>
+                                        }
+                                        else{<td>@b.Reference</td>}
+                                        <td>@b.Date.ToString("MMM d, yyyy")</td>
+                                        <td>@b.Date.ToString("hh:mm:ss tt")</td>
+                                        <td>@b.BookingDate.ToString("MMM d, yyyy")</td>
+                                        <td>@b.NumberOfDays</td>
+                                        <td><strong>&#8358; @(b.NumberOfDays * b.Room.Price) </strong></td>
+                                        <td>@b.Room.Name</td>
+                                        <td><img src="@b.Room.ImagePath"></td>
+                                        <td @onclick="(() => Print(b))" class="check-out">Print<span class="tooltip">click and press Ctrl + P</span></td>
+                                        <td @onclick="(() => CheckOut(b.Room.Id))" class="check-out">Check out</td>
+                                        @if (string.IsNullOrEmpty(b.Reference))
+                                        {
+                                           <td class="msg green">Paid Offline</td>
+                                        }
+                                        else
+                                        {
+                                            <td @onclick="(() => Verify(b.Reference))" class="check-out">Click to Verify</td>
+                                        }
+                                    </tr>
+                                
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <section class="dynamic-table">
+        <div class="table">
+            <div class="table-header">
+                <h3>Available Rooms</h3>
+            </div>
+            <div class="table-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Room Picture</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in rooms)
+                        {
+                            if (!bookedRooms.Contains(r.Id))
+                            {
+                                <tr>
+                                    <td>@r.Name</td>
+                                    <td>@r.Category</td>
+                                    <td>@r.Price</td>
+                                    <td><img src="@r.ImagePath"></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+}
+
+@code {
+    List<BookingData> bookedData = new();
+    string toggleOptions = "booked";
+    List<string> bookedRooms = new();
+    List<Room> rooms = new();
+    string hotelName = "Dream Hotel, Africa.";
+    string hotelAddr = "Location 1, Dream Hotel Road, Africa.";
+    public List<string> HeaderNames { get; set; } = new(){ "Id", "Password", "Password2" };
+    protected override void OnInitialized()
+    {
+        bookedData = store.ReadAllBookingData().Result.OrderByDescending(x => x.Date).ToList<BookingData>();
+        rooms = rc.ReadAll().Result;
+        bookedRooms = rc.GetBookedRooms().Result;
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            GetHotelInfo();
+        }
+    }
+    private void CheckOut(string roomId)
+    {
+        var isAdded = rc.AddBookedRooms(roomId, false);
+        if (isAdded.Result)
+        {
+            var room = bookedData.Find(r => r.Room.Id.Equals(roomId));
+            bookedData.Remove(room ?? new());
+            bookedRooms.Remove(roomId);
+        }
+    }
+    private void Verify(string reference)
+    {
+        navigationManager.NavigateTo($"/view-payments/{reference}");
+    }
+    private void Print(BookingData data)
+    {
+        StringBuilder receiptBuilder = new StringBuilder();
+        receiptBuilder.AppendLine("<div style=\"background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 4px;\">");
+        receiptBuilder.AppendLine("<h2 style=\"font-size: 24px; color: #021832;\">Receipt</h2>");
+        receiptBuilder.AppendLine($"<h3 style=\"font-size: 21px; color: #caa169;\">{hotelName}</h3>");
+        receiptBuilder.AppendLine($"<em style=\"font-size: 16px; color: #021832;\">Address: {hotelAddr}</em>");
+        receiptBuilder.AppendLine("<hr style=\"color: #0000ff;\"></hr>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Customer's full name: {data.Name}</p>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Room info: {data.Room.Name}</p>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Total amount: &#8358;{data.NumberOfDays * data.Room.Price}</p>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Date Checked in: {data.Date.ToString("MMM dd, yyyy; hh:mm:ss tt")}</p>");
+        receiptBuilder.AppendLine($"<p style=\"font-size: 18px; text-align:justify; color: #021832;\">Due Date: {(data.Date.AddDays(data.NumberOfDays)).ToString("MMM dd, yyyy")}</p>");
+        receiptBuilder.AppendLine("<p> </p>");
+        receiptBuilder.AppendLine($"<em style=\"font-size: 16px; text-align:justify; color: #021832;\">Thank you for patronizing {hotelName}</em>");
+        receiptBuilder.AppendLine("</div>");
+
+        string receiptContent = receiptBuilder.ToString();
+        // Example: Open new window with receipt content
+        var jsCode = $"window.open().document.write(`{receiptContent}`);";
+        jsRuntime.InvokeVoidAsync("eval", jsCode);
+    }
+    private void GetHotelInfo()
+    {
+        string _hotelName = secrets.OnGet("keys", "hotel-name");
+        string _hotelAddr = secrets.OnGet("keys", "hotel-address");
+        if (!string.IsNullOrWhiteSpace(_hotelName) && !string.IsNullOrWhiteSpace(_hotelAddr))
+        {
+            hotelName = _hotelName;
+            hotelAddr = _hotelAddr;
+        }
+    }
+}

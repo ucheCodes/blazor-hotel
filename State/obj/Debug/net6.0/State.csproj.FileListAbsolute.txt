@@ -1,0 +1,12 @@
+C:\Users\peter soft\source\repos\Hotel\State\bin\Debug\net6.0\State.deps.json
+C:\Users\peter soft\source\repos\Hotel\State\bin\Debug\net6.0\State.dll
+C:\Users\peter soft\source\repos\Hotel\State\bin\Debug\net6.0\State.pdb
+C:\Users\peter soft\source\repos\Hotel\State\obj\Debug\net6.0\State.csproj.AssemblyReference.cache
+C:\Users\peter soft\source\repos\Hotel\State\obj\Debug\net6.0\State.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\peter soft\source\repos\Hotel\State\obj\Debug\net6.0\State.AssemblyInfoInputs.cache
+C:\Users\peter soft\source\repos\Hotel\State\obj\Debug\net6.0\State.AssemblyInfo.cs
+C:\Users\peter soft\source\repos\Hotel\State\obj\Debug\net6.0\State.csproj.CoreCompileInputs.cache
+C:\Users\peter soft\source\repos\Hotel\State\obj\Debug\net6.0\State.dll
+C:\Users\peter soft\source\repos\Hotel\State\obj\Debug\net6.0\refint\State.dll
+C:\Users\peter soft\source\repos\Hotel\State\obj\Debug\net6.0\State.pdb
+C:\Users\peter soft\source\repos\Hotel\State\obj\Debug\net6.0\ref\State.dll
