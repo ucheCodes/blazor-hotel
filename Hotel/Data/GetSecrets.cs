@@ -7,11 +7,17 @@
         {
             this.config = _config;
         }
-        public string OnGet(string id,string key)
+        public string OnGet(string id, string key)//Gpt modified
         {
-            var apiKey = config.GetSection(id)[key];
-            var keyConfig = config.GetSection(id).GetValue<string>(key);
+            var section = config.GetSection(id);
+            var keyConfig = section.GetValue<string>(key);
             return keyConfig;
         }
+        //public string OnGet(string id,string key)
+        //{
+        //    var apiKey = config.GetSection(id)[key];
+        //    var keyConfig = config.GetSection(id).GetValue<string>(key);
+        //    return keyConfig;
+        //}
     }
 }

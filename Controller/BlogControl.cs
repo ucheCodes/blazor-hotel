@@ -79,7 +79,7 @@ namespace AppController
         public async Task<bool> DeleteComments(string key)
         {
             string id = JsonConvert.SerializeObject(key);
-            var isDeleted = await database.Delete("Comments", id);
+            var isDeleted = await database.Delete("Comment", id);
             return isDeleted;
         }
         public async Task<bool> Delete(string key)

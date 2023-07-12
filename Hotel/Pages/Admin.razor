@@ -122,7 +122,7 @@
                         <div class="card">
                             <span class="msg @msgClass">@message</span>
                             <div class="x">
-                                <InputText @onfocusout="(() => ValidateBlogField(blog.Title,blogFields[0]))" @bind-Value="blog.Title" maxlength="60" placeholder="Title of Blog" type="text" class="input-name"/>
+                                <InputText @onfocusout="(() => ValidateBlogField(blog.Title,blogFields[0]))" @bind-Value="blog.Title" maxlength="100" placeholder="Title of Blog" type="text" class="input-name"/>
                             </div>
                             <div class="x">
                                 <InputText @onfocusout="(() => ValidateBlogField(blog.Description,blogFields[1]))" type="text" @bind-Value="blog.Description" maxlength="200" class="form-control" placeholder="Brief Blog Description" />
@@ -216,6 +216,18 @@
                 food = JsonConvert.DeserializeObject<Food>(data.kvp.Value) ?? new Food();
                 imgPath = food.ImagePath;
                 break;
+            case 4:
+                activeSelection = 4;
+                blog = JsonConvert.DeserializeObject<BlogData>(data.kvp.Value) ?? new BlogData();
+                imgPath = blog.ImagePath;
+                Body = blog.Body;
+                break;
+            case 5:
+                activeSelection = 5;
+                var cat = JsonConvert.DeserializeObject<KeyValuePair<string, int>>(data.kvp.Value);
+                category = cat.Key;
+                categoryAmount = cat.Value;
+                break;
             default:
                 activeSelection = 1;
                 break;
@@ -293,24 +305,31 @@
     {
         if (imgPath != "" && !string.IsNullOrEmpty(food.Name) && food.Price > 0)
         {
-            food.ImagePath = imgPath;
-            if(string.IsNullOrEmpty(food.Id))
-                food.Id = Guid.NewGuid().ToString();
-            var isAdded = kc.Create(food);
-            if (isAdded.Result)
+            try
             {
-                message = "data upload success!";
-                msgClass = "green";
-                string notifMsg = $"A new food {food.Name} was added to the kitchen. Kindly check it out ";
-                bool is4Admin = false;
-                string department = "kitchen";
-                var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
-                if (isNotified.Result)
+                food.ImagePath = imgPath;
+                food.Date = DateTime.Now;
+                if (string.IsNullOrEmpty(food.Id))
+                    food.Id = Guid.NewGuid().ToString();
+                var isAdded = kc.Create(food);
+                if (isAdded.Result)
                 {
-                    hubConnection.SendAsync("Notify", "A new notification is added");
+                    message = "data upload success!";
+                    msgClass = "green";
+                    string notifMsg = $"A new food {food.Name} was added to the kitchen. Kindly check it out ";
+                    bool is4Admin = false;
+                    string department = "kitchen";
+                    var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
+                    if (isNotified.Result)
+                    {
+                        hubConnection.SendAsync("Notify", "A new notification is added");
+                    }
+                    food = new Food();
+                    navigationManager.NavigateTo("/kitchen");
                 }
-                food = new Food();
-                navigationManager.NavigateTo("/kitchen");
+            }
+            catch (Exception)
+            {
             }
         }
         else
@@ -323,24 +342,30 @@
     {
         if (imgPath != "" && !string.IsNullOrEmpty(room.Name) && room.Price > 0)
         {
-            room.ImagePath = imgPath;
-            if (string.IsNullOrEmpty(room.Id))
-                room.Id = Guid.NewGuid().ToString();
-            var isAdded = rc.Create(room);
-            if (isAdded.Result)
+            try
             {
-                message = "data upload success!";
-                msgClass = "green";
-                string notifMsg = $"A new room {room.Name} was added to the room gallery. Kindly check it out ";
-                bool is4Admin = false;
-                string department = "room";
-                var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
-                if (isNotified.Result)
+                room.ImagePath = imgPath;
+                if (string.IsNullOrEmpty(room.Id))
+                    room.Id = Guid.NewGuid().ToString();
+                var isAdded = rc.Create(room);
+                if (isAdded.Result)
                 {
-                    hubConnection.SendAsync("Notify", "A new notification is added");
+                    message = "data upload success!";
+                    msgClass = "green";
+                    string notifMsg = $"A new room {room.Name} was added to the room gallery. Kindly check it out ";
+                    bool is4Admin = false;
+                    string department = "room";
+                    var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
+                    if (isNotified.Result)
+                    {
+                        hubConnection.SendAsync("Notify", "A new notification is added");
+                    }
+                    room = new Room();
+                    navigationManager.NavigateTo("/rooms");
                 }
-                room = new Room();
-                navigationManager.NavigateTo("/rooms");
+            }
+            catch (Exception)
+            {
             }
         }
         else
@@ -354,25 +379,33 @@
         if (!string.IsNullOrEmpty(blog.Title) && !string.IsNullOrEmpty(blog.Description) &&
         !string.IsNullOrEmpty(Body) && !string.IsNullOrEmpty(blog.Category) && !string.IsNullOrEmpty(blog.Tag))
         {
-            blog.Id = Guid.NewGuid().ToString();
-            blog.ImagePath = imgPath;
-            blog.Date = DateTime.Now;
-            blog.Body = Body;
-            var isAdded = bc.Create(blog);
-            if (isAdded.Result)
+            try
             {
-                message = "data upload success!";
-                msgClass = "green";
-                string notifMsg = $"A new blog post {blog.Title} was added by admin. Kindly check it out ";
-                bool is4Admin = false;
-                string department = "blog";
-                var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
-                if (isNotified.Result)
+                if (string.IsNullOrEmpty(blog.Id))
+                    blog.Id = Guid.NewGuid().ToString();
+                blog.ImagePath = imgPath;
+                blog.Date = DateTime.Now;
+                blog.Body = Body;
+                var isAdded = bc.Create(blog);
+                if (isAdded.Result)
                 {
-                    hubConnection.SendAsync("Notify", "A new notification is added");
+                    message = "data upload success!";
+                    msgClass = "green";
+                    string notifMsg = $"A new blog post {blog.Title} was added by admin. Kindly check it out ";
+                    bool is4Admin = false;
+                    string department = "blog";
+                    var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
+                    if (isNotified.Result)
+                    {
+                        hubConnection.SendAsync("Notify", "A new notification is added");
+                    }
+                    navigationManager.NavigateTo($"/blog-post/{blog.Id}");
+                    blog = new BlogData();
                 }
-                navigationManager.NavigateTo($"/blog-post/{blog.Id}");
-                blog = new BlogData();
+            }
+            catch
+            {
+                
             }
         }
         else

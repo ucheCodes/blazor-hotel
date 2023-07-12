@@ -83,6 +83,12 @@ namespace AppController
             var isAdded = await database.Create("Category", cat, value);
             return isAdded;
         }
+        public async Task<bool> DeleteCategory(string key)
+        {
+            string id = JsonConvert.SerializeObject(key);
+            var isDeleted = await database.Delete("Category", id);
+            return isDeleted;
+        }
         public async Task<List<KeyValuePair<string,int>>> ReadAllCategory()
         {
             List<KeyValuePair<string, int>> categoryList = new();

@@ -1,0 +1,12 @@
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\MailService.dll
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\MailService.deps.json
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\MailService.pdb
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\MailKit.dll
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\MimeKit.dll
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\NETCore.MailKit.dll
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\Newtonsoft.Json.dll
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\BouncyCastle.Crypto.dll
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\System.Security.Cryptography.Pkcs.dll
+C:\Users\peter soft\source\repos\Hotel\MailService\bin\Release\net6.0\publish\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll

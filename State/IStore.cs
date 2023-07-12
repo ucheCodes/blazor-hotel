@@ -15,10 +15,6 @@ namespace AppStore
         void ChangeNoticationCount(int count);
         Task<bool> AddBookingDataToDatabase(BookingData data);
         Task<List<BookingData>> ReadAllBookingData();
-        //Task<bool> AddPaystackTransaction(PaystackTransaction transaction);
-        //Task<List<PaystackTransaction>> GetPaystackTransactions();
-        //Task<bool> DeletePaystackTransaction(string id);
-        //Task<dynamic> Checkout(string customerEmail, int amount, string publicKey, string secretKey);
         State State();
     }
 }

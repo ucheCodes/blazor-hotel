@@ -1,0 +1,4 @@
+C:\Users\peter soft\source\repos\Hotel\Database\bin\Release\net6.0\publish\Database.dll
+C:\Users\peter soft\source\repos\Hotel\Database\bin\Release\net6.0\publish\Database.deps.json
+C:\Users\peter soft\source\repos\Hotel\Database\bin\Release\net6.0\publish\Database.pdb
+C:\Users\peter soft\source\repos\Hotel\Database\bin\Release\net6.0\publish\DBreeze.dll

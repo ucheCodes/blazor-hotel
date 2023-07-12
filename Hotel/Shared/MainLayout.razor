@@ -33,6 +33,7 @@
     string _dateHosted => secrets.OnGet("keys", "host-date"); // "mm/dd/yyyy"
     protected override void OnInitialized()
     {
+        string d = secrets.OnGet("keys", "duration");
         CheckSubscription();
     }
     private void CheckSubscription()
@@ -48,7 +49,7 @@
                 subscribed = true;
             }
         }
-        //Very important!!! Don't forget to incluyde date hosted and duration in app secrets
+        //Very important!!! Don't forget to include date hosted and duration in app secrets
         //Don't also forget to modify it when clients subscribe
         //The date is in format "mm/dd/yyyy"
     }

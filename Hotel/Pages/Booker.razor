@@ -94,7 +94,7 @@
         </div>
         @if(selectedRoom.Price > 0)
         {
-            <button type="submit" class="main-btn">Confirm Booking</button>
+            <button type="submit" class="main-btn">Confirm</button>
         }
     </div>
 </EditForm>
@@ -225,22 +225,28 @@
         var isAdded = store.AddBookingDataToDatabase(data);
         if (isAdded.Result)
         {
-            //Add booked room to db to show it has been booked
-            rc.AddBookedRooms(data.Room.Id, true);
-            selectedRoom = new();
-            selectedRoom.ImagePath = "./images/room/point3d-commercial-imaging-ltd-GUno-FetWJM-unsplash.jpg";
-            message = "Thank you for patronizing us!";
-            msgClass = "green";
-            //Notifications message
-            string notifMsg = $"A room {data.Room.Name} was booked by {data.Name} with email {data.Email}";
-            bool is4Admin = true;
-            string department = "booked-room";
-            var isNotified = nc.AddNotification(notifMsg, is4Admin, department);
-            if (isNotified.Result)
+            try
             {
-                hubConnection.SendAsync("Notify", "A new notification is added");
+                //Add booked room to db to show it has been booked
+                rc.AddBookedRooms(data.Room.Id, true);
+                selectedRoom = new();
+                selectedRoom.ImagePath = "./images/room/point3d-commercial-imaging-ltd-GUno-FetWJM-unsplash.jpg";
+                message = "Thank you for patronizing us!";
+                msgClass = "green";
+                //Notifications message
+                string notifMsg = $"A room {data.Room.Name} was booked by a client {data.Name} with email {data.Email}";
+                bool is4Admin = true;
+                string department = "booked-room";
+                var isNotified = nc.AddNotification(notifMsg, is4Admin, department);
+                if (isNotified.Result)
+                {
+                    hubConnection.SendAsync("Notify", "A new notification is added");
+                }
+                data = new();
             }
-            data = new();
+            catch (Exception)
+            {
+            }
         }
     }
     private async void PaystackCheckout()

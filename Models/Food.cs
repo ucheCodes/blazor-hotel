@@ -7,5 +7,6 @@
         public int Price { get; set; }
         public string Desc { get; set; } = string.Empty;
         public string ImagePath { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
     }
 }

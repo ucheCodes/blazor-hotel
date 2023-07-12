@@ -10,6 +10,7 @@ namespace AppController
         Task<List<Room>> ReadAll();
         Task<List<KeyValuePair<string, int>>> ReadAllCategory();
         Task<bool> AddCategory(string category, int amount);
+        Task<bool> DeleteCategory(string key);
         Task<List<string>> GetBookedRooms();
         Task<bool> AddBookedRooms(string roomId, bool isBooked);
     }

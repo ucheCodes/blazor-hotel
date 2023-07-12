@@ -10,9 +10,28 @@ using AppController;
 var builder = WebApplication.CreateBuilder(args);
 //var config_ = builder.Configuration["keys"];
 
+/*Configuration for secrets*/
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+var configBuilder = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);  // Add your existing appsettings.json file
+
+if (env == Environments.Production)
+{
+    configBuilder.AddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true);
+}
+else
+{
+    configBuilder.AddJsonFile("appsettings.Production.json", optional: false, reloadOnChange: true);
+}
+var configuration = configBuilder.Build();
+
+
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddSingleton<IConfiguration>(configuration);
 builder.Services.AddSingleton<GetSecrets>();
 builder.Services.AddScoped<SignalRService>();
 builder.Services.AddScoped<IDatabase, Database>();

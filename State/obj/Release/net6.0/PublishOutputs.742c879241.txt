@@ -1,0 +1,9 @@
+C:\Users\peter soft\source\repos\Hotel\State\bin\Release\net6.0\publish\Store.dll
+C:\Users\peter soft\source\repos\Hotel\State\bin\Release\net6.0\publish\Store.deps.json
+C:\Users\peter soft\source\repos\Hotel\State\bin\Release\net6.0\publish\Store.pdb
+C:\Users\peter soft\source\repos\Hotel\State\bin\Release\net6.0\publish\DBreeze.dll
+C:\Users\peter soft\source\repos\Hotel\State\bin\Release\net6.0\publish\Newtonsoft.Json.dll
+C:\Users\peter soft\source\repos\Hotel\State\bin\Release\net6.0\publish\Database.dll
+C:\Users\peter soft\source\repos\Hotel\State\bin\Release\net6.0\publish\Models.dll
+C:\Users\peter soft\source\repos\Hotel\State\bin\Release\net6.0\publish\Database.pdb
+C:\Users\peter soft\source\repos\Hotel\State\bin\Release\net6.0\publish\Models.pdb

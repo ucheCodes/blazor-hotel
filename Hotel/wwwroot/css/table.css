@@ -103,3 +103,8 @@ tbody tr:hover {
         margin-right: 6px;
     }
 }
+@media (max-width: 410px){
+    .table-header{
+        margin-bottom: 2rem;
+    }
+}

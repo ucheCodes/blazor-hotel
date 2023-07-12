@@ -183,6 +183,9 @@
     .kitchen .row {
         margin-top: 14rem;
     }
+    .team-wrapper .row .alter{
+        margin-top: 3.5rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -233,6 +236,9 @@
         width: 100%;
         margin: 5px;
     }
+    .team-wrapper .row .alter-top {
+        margin-top: 3.5rem;
+    }
 }
 @media (max-width: 500px) {
     .kitchen .row .food {
@@ -258,8 +264,7 @@
     }
     .slider h1 {
         font-size: 1rem;
-        line-height: 1rem;
-        color: black;
+        line-height: 1.2rem;
     }
     h1 {
         font-size: 1rem;

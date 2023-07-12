@@ -11,7 +11,7 @@
                         <th>S / N</th>
                         @foreach (PropertyInfo property in properties)
                         {
-                                @if (!SkipHeaderNames.Contains(property.Name))//(!property.Name.Equals("Id") && !property.Name.Equals("Password") && !property.Name.Equals("Password2"))
+                                @if (!SkipHeaderNames.Contains(property.Name))
                                 {
                                     <th style="cursor:pointer;">
                                         <span @onclick="() => SortByColumn(property)">
@@ -58,7 +58,7 @@
                                     }
                                     else
                                     {
-                                        <td>null value</td>
+                                        <td>Nil</td>
                                     }
                                 }
                             }
@@ -90,6 +90,10 @@
         {
             SortByDateTimeInitial(properties, false, true);
         }
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        itemCount = 0;
     }
     private void SortByDateTimeInitial(PropertyInfo[] prop, bool asc, bool isSort)
     {

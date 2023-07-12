@@ -48,3 +48,4 @@ C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Debug\net6.0\MailService.pdb
 C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Debug\net6.0\Models.pdb
 C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Debug\net6.0\Store.pdb
 C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Debug\net6.0\NETCore.MailKit.dll
+C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Debug\net6.0\appsettings.Production.json

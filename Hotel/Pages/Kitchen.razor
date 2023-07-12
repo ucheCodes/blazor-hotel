@@ -218,13 +218,8 @@
     private IWebHostEnvironment? _environment { get; set; }
     protected override void OnInitialized()
     {
-        foods = kc.ReadAll().Result;
-        //CreateSlideImages();
+        foods = kc.ReadAll().Result.OrderByDescending(f => f.Date).ToList();
         store.AddStateChangedAction(() => { StateHasChanged(); });
-    }
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender) CreateSlideImages();
     }
     private void CloseDialog()
     {
@@ -270,30 +265,6 @@
             Header = "Enjoy a symphony of tasty delicacies made from the finest ingredients",
             ImagePath = "./images/kitchen/food12.jpg" },
     };
-    private void CreateSlideImages()
-    {
-        if (foods.Count > 0)
-        {
-            slides = new List<Slide>();
-            int count = 0;
-            bool isActive = true;
-            foreach (var food in foods)
-            {
-                if (count != 0) isActive = false;
-                Slide s = new Slide()
-                    {
-                        Header = food.Name,
-                        Caption = food.Desc,
-                        ImagePath = food.ImagePath,
-                        IsActive = isActive
-
-                };
-                slides.Add(s);
-                if (count > 5) break;
-                count++;
-            }
-        }
-    }
     private void Edit(Food food)
     {
         store.SetEditingValue(3, JsonConvert.SerializeObject(food));

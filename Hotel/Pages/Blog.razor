@@ -1,5 +1,7 @@
 ﻿@page "/blog"
 @inject IBlogControl bc
+@inject IStore store
+@inject NavigationManager navigationManager
 
 <section id="blog" class="blog-wrapper pb-0">
     @if (blogList.Count == 0)
@@ -71,7 +73,6 @@
                         <div class="blog-img">
                             <img src="./images/blog/mky-moody-AUF6Gl4wwzA-unsplash.jpg" alt="blog">
                         </div>
-                        @*                    <img src="./images/blog/mky-moody-AUF6Gl4wwzA-unsplash.jpg" class="img-fluid" alt="blog">*@
                         <div class="blog-content bg-white p-4">
                             <h5 class="text-decoration-underline mb-4">Luxury at it's peak</h5>
                             <h6>By Admin - February 18, 2023</h6>
@@ -110,6 +111,13 @@
                             <div class="blog-content bg-white p-4">
                                 <h5 class="text-decoration-underline mb-4">@blog.Title</h5>
                                 <h6>By Admin - @blog.Date.ToString("MMMM d, yyyy hh:mm tt")</h6>
+                                @if (store.State().IsAdmin.isAdmin)
+                                {
+                                    <div class="admin">
+                                        <i @onclick="(() => {deleteId = blog.Id; deleteName = blog.Title; showDialog = true;})" class="fas fa-trash"></i>
+                                        <i @onclick="(() =>{Edit(blog);})" class="fas fa-edit"></i>
+                                    </div>
+                                }
                                 <p class="mt-2">
                                     @blog.Description
                                 </p>
@@ -125,14 +133,70 @@
         </div>
     }
 </section>
+@if (showDialog)
+{
+    <section class="dialog">
+        <div class="container">
+            <span @onclick="CloseDialog" class="close">x</span>
+            <span>Do you want to delete @deleteName permanently?</span>
+            <button @onclick="(() => Delete(deleteId))" class="main-btn">Confirm Delete</button>
+        </div>
+    </section>
+}
 
 @code{
+    [Inject]
+    private IWebHostEnvironment? _environment { get; set; }
     private List<BlogData> blogList = new();
     [Parameter]
     public int limit { get; set; }
     int count = 0;
+    private bool showDialog = false;
+    private string deleteName = "";
+    private string deleteId = "";
     protected override async Task OnInitializedAsync()
     {
         blogList = (await bc.ReadAll()).OrderByDescending(b => b.Date).ToList();
+    }
+    private void CloseDialog()
+    {
+        showDialog = false;
+        deleteId = string.Empty;
+        deleteName = string.Empty;
+    }
+    private void Delete(string id)
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+            var isDel = bc.Delete(id);
+            if (isDel.Result)
+            {
+                var b = blogList.Find(x => x.Id == id);
+                DeleteImage(b?.ImagePath ?? "");
+                blogList.Remove(b ?? new());
+                CloseDialog();
+            }
+        }
+    }
+    private void Edit(BlogData blog)
+    {
+        store.SetEditingValue(4, JsonConvert.SerializeObject(blog));
+        navigationManager.NavigateTo("/admin");
+    }
+    public void Dispose()
+    {
+        store.RemoveStateChangedAction(() => { StateHasChanged(); });
+    }
+    public void DeleteImage(string filePath)
+    {
+        if (_environment != null)
+        {
+            string imagePath = Path.Combine(_environment.WebRootPath, filePath);
+
+            if (File.Exists(imagePath))
+            {
+                File.Delete(imagePath);
+            }
+        }
     }
 }

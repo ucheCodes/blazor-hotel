@@ -49,7 +49,6 @@ namespace AppController
             var isDeleted = await database.Delete("TransactionInfo", key);
             return isDeleted;
         }
-        //paystack
         public async Task<bool> AddPaystackTransaction(PaystackTransaction transaction)
         {
             var id = JsonConvert.SerializeObject(transaction.Reference);

@@ -1,6 +1,7 @@
 ﻿@inject IJSRuntime jsRuntime
 @inject IStore store
 @inject IUserControl userControl
+@inject SignalRService signalR
 @implements IDisposable
 
 <nav class="@headerClass navbar-expand-lg">
@@ -31,19 +32,19 @@
                 <li @onclick="ToggleLoginShow" class="nav-item icon">
                     <a class="nav-link"><i class="fas fa-user"></i></a>
                 </li>
+                <li @onclick="CloseNotif" class="nav-item icon bell">
+                    <NavLink class="nav-link" href="/notification">
+                        <i class="fas fa-bell"></i>
+                        @if (store.State().Counter.Count > 0)
+                        {
+                            <span class="notification-counter">@store.State().Counter.Count</span>
+                        }
+                    </NavLink>
+                </li>
                 @if (true)//store.State().IsAdmin.isAdmin
                 {
                     <li @onclick="CloseNavBar" class="nav-item icon">
                         <a href="/admin" class="nav-link"><i class="fas fa-user-lock"></i></a>
-                    </li>
-                    <li @onclick="CloseNotif" class="nav-item icon bell">
-                        <NavLink class="nav-link" href="/notification">
-                            <i class="fas fa-bell"></i>
-                            @if (store.State().Counter.Count > 0)
-                            {
-                                <span class="notification-counter">@store.State().Counter.Count</span>
-                            }
-                        </NavLink>
                     </li>
                 }
                 <li class="nav-item icon">
@@ -63,8 +64,10 @@
 @code {
     private string headerClass = "navbar";
     private bool isNavbarOpen = false;
+    private HubConnection? hubConnection => signalR.HubConnection;
     protected override void OnInitialized()
     {
+        hubConnection.On<string>("Notification", UpdateSignalRCountNotification);
         store.AddStateChangedAction(() => { StateHasChanged(); });
     }
     public void Dispose()
@@ -77,6 +80,13 @@
         {
             await jsRuntime.InvokeVoidAsync("addScrollListener");
         }
+    }
+    private void UpdateSignalRCountNotification(string message)
+    {
+        int count = store.State().Counter.Count;
+        count = count + 1;
+        store.ChangeNoticationCount(count);
+        //InvokeAsync(StateHasChanged);
     }
 
     private void ToggleNavbar()

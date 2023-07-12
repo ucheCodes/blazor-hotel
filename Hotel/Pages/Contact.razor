@@ -52,7 +52,7 @@
             <h3>Get in touch</h3>
             <span class="msg @msgClass">@message</span>
             <input @bind="user.Name" placeholder="Enter full name *" type="text" class="input-name">
-            <input @onfocusout="(()=>IsEmailValid(user.Email))" @bind="user.Email" placeholder="Enter full name *" type="email" class="input-name">
+            <input @onfocusout="(()=>IsEmailValid(user.Email))" @bind="user.Email" placeholder="Enter valid email address *" type="email" class="input-name">
             <input  @onfocusout="(()=>IsMobileValid(user.Mobile))" @bind="user.Mobile" placeholder="Enter mobile number *" type="text" class="input-name">
             <input @bind="title" placeholder="Subject *" type="text" class="input-name">
             <textarea @bind="body" class="textarea" placeholder="Type your comment"></textarea>

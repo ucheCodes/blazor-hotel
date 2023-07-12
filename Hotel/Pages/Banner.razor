@@ -83,7 +83,7 @@
     public bool showBooker { get; set; } = true;
     public Room selectedRoom { get; set; } = new();
     private int activeIndex = 0;
-    private Timer? timer;//modified because of nullable error
+    private Timer? timer;
     private List<Room> rooms = new();
     private List<Room> roomCategorized = new();
     public List<KeyValuePair<string, int>> categories { get; set; } = new();
@@ -91,7 +91,7 @@
     List<string> bookedRooms = new();
     protected override void OnInitialized()
     {
-        timer = new Timer(_ => NextSlide(), null, 15000, 15000); // Initial delay: 3000ms, Interval: 3000ms
+        timer = new Timer(_ => NextSlide(), null, 15000, 15000); 
         rooms = rc.ReadAll().Result;
         bookedRooms = rc.GetBookedRooms().Result;
         categories = rc.ReadAllCategory().Result;

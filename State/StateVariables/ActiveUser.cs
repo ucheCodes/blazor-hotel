@@ -9,7 +9,7 @@ namespace AppStore.StateVariables
 {
     public class ActiveUser
     {
-        public Users User { get; set; }
+        public Users User { get; }
         public ActiveUser(Users user) { 
             User = user;
         }

@@ -5,9 +5,10 @@
 @inject GetSecrets secrets
 @inject SignalRService signalR
 @inject INotificationControl nc
+@inject ProtectedSessionStorage sessionStorage
 @implements IDisposable
 
-<PageTitle>Dream Hotel @store.State().Counter.Count</PageTitle>
+<PageTitle>Dream Hotel</PageTitle>
 <Banner slides="slides" sliderAnimation="@sliderAnimation" showBooker="true"/>
 <About/>
 <Rooms/>
@@ -21,7 +22,6 @@
 
 @code{
     public string sliderAnimation { get; set; } = "zoom-in";
-    private HubConnection? hubConnection => signalR.HubConnection;
     private List<Slide> slides = new List<Slide>
     {
         new Slide {
@@ -68,7 +68,6 @@
         var users = await userControl.ReadAll();
         store.AddCustomers(users);
         await Task.Delay(1);
-        hubConnection.On<string>("Notification", UpdateSignalRCountNotification);
         store.AddStateChangedAction(() => { StateHasChanged(); });
     }
     public void Dispose()
@@ -119,19 +118,13 @@
         }
         store.SetUser(user, status);
     }
-    private void UpdateSignalRCountNotification(string message)
-    {
-        int count = store.State().Counter.Count;
-        count = count + 1;
-        store.ChangeNoticationCount(count);
-        //InvokeAsync(StateHasChanged);
-    }
-    private void GetNotificationCount()
+    private async void GetNotificationCount()
     {
         var notifications = nc.ReadAll().Result;
         var isAdmin = store.State().IsAdmin.isAdmin;
         int count = 0;
-        if (notifications.Count > 0)
+        bool isNotified = await IsUserNotifiedBySession();
+        if (notifications.Count > 0 && !isNotified)
         {
             if (isAdmin)
             {
@@ -143,6 +136,31 @@
             }
             if (count > 0)
                 store.ChangeNoticationCount(count);
+            SetNotifTimeSession();
+        }
+    }
+    private async Task<bool> IsUserNotifiedBySession()
+    {
+        var result = (await sessionStorage.GetAsync<string>("notif-time")).Value;
+        if (!string.IsNullOrEmpty(result))
+        {
+            var notifTime = DateTime.Parse(result);
+            if (DateTime.Now.Date.Equals(notifTime.Date))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private async void SetNotifTimeSession()
+    {
+        try
+        {
+            await sessionStorage.SetAsync("notif-time", DateTime.Now.ToString());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"An error from session {e.Message}");         
         }
     }
 
@@ -160,12 +178,15 @@
     //work on groove Dd slR Tsfm or Dd sl Stsfm
     //Ldm slR tsfm or Sdm slS tsfm
 
-
-     /*
-     * Finishing Touches
-     * Modify notification count on index load
+    /*
+     * Advanced Technologies and Concepts used
+     * Clean code Architecture
+     * Flux State management architecture
+     * Dependency injection
+     * OOP
+     * SignalR
+     * MailKit
      */
-
 
      /*
      * Functions of the app

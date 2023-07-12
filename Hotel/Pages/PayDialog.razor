@@ -80,7 +80,7 @@
             //Notifications message
             string notifMsg = $"A meal was ordered by a client with email {order.Email} and mobile {order.Mobile}";
             bool is4Admin = true;
-            string department = "kitchen";
+            string department = "booked-food";
             var isNotified = nc.AddNotification(notifMsg, is4Admin, department);
             if (isNotified.Result)
             {

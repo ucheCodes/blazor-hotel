@@ -1,0 +1,152 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Hotel
+build_property.RootNamespace = Hotel
+build_property.ProjectDir = C:\Users\peter soft\source\repos\Hotel\Hotel\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\peter soft\source\repos\Hotel\Hotel
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/About.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWJvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Admin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Banner.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmFubmVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Blog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/BlogPost.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmxvZ1Bvc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Book.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQm9vay5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/BookedFoods.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQm9va2VkRm9vZHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/BookedRooms.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQm9va2VkUm9vbXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Booker.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQm9va2VyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Contact.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udGFjdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Customers.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/DynamicTables.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRHluYW1pY1RhYmxlcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Footer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9vdGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Gallery.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcR2FsbGVyeS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Kitchen.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcS2l0Y2hlbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/LoginDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW5EaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/NotificationPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm90aWZpY2F0aW9uUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/PayDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5RGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Prices.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpY2VzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Rooms.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUm9vbXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/RoomsView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUm9vbXNWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Services.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VydmljZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Tables.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGFibGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Team.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhbS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/ViewPayments.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld1BheW1lbnRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-60hisgtzli
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-9crw01kn07
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/peter soft/source/repos/Hotel/Hotel/Pages/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 

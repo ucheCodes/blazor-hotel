@@ -205,11 +205,19 @@
             <div class="comments">
                 @if (blogComments.Count > 0)
                 {
-                   <h2>@blogComments.Count comments</h2>
+                   <h2>
+                       @blogComments.Count comments
+                   </h2>
                    @foreach (var comment in blogComments)
                     {
                         <div class="comment">
-                            <h4>@comment.Username <span>@comment.Date.ToString("MMM d, yyyy hh:mm tt")</span></h4>
+                            <h4>
+                                    @comment.Username <span>@comment.Date.ToString("MMM d, yyyy hh:mm tt")</span>&nbsp;&nbsp;&nbsp;
+                                @if (store.State().IsAdmin.isAdmin)
+                                {
+                                    <i @onclick="(() => {deleteId = comment.Id; showDialog = true;})" class="fas fa-trash"></i>
+                                }
+                            </h4>
                             <p>
                                 @comment.Comment
                             </p>
@@ -270,6 +278,16 @@
     </div>
     }
 </section>
+@if (showDialog)
+{
+    <section class="dialog">
+        <div class="container">
+            <span @onclick="CloseDialog" class="close">x</span>
+            <span>Do you want to delete permanently this comment?</span>
+            <button @onclick="(() => Delete(deleteId))" class="main-btn">Confirm Delete</button>
+        </div>
+    </section>
+}
 
 @code {
     [Parameter]
@@ -283,6 +301,8 @@
     private string message = "";
     private string msgClass = "";
     private string search = "";
+    private string deleteId = "";
+    private bool showDialog = false;
     int recentCount = 0;
     int tagCount = 0;
     int categoryCount = 0;
@@ -302,20 +322,21 @@
         var allComments = (await bc.ReadAllComments()).ToList();
         if (allComments != null && allComments.Count > 0 && blog.Id != "")
         {
-            blogComments = allComments.Where(c => c.BlogId == blog.Id).OrderBy(c => c.Date).ToList();
+            blogComments = allComments.Where(c => c.BlogId == blog.Id).OrderByDescending(c => c.Date).ToList();
         }
         blogs = await bc.ReadAll();
         recentBlogs = blogs.OrderByDescending(x => x.Date).ToList();
         if (Id != id)//shows that a new blog is selected
             Id = id;//We now have to work with the current id
-            username = store.State().ActiveUser?.User.Name ?? "";
-            recentCount = 0; tagCount = 0; categoryCount = 0;
+        username = store.State().ActiveUser?.User.Name ?? "";
+        recentCount = 0; tagCount = 0; categoryCount = 0;
     }
     private void UpdateSignalRComment(BlogComment comment)
     {
         if (comment.BlogId == Id)//if the comment is for the current blog post
         {
             blogComments.Add(comment);
+            blogComments = blogComments.OrderByDescending(b => b.Date).ToList();
             InvokeAsync(StateHasChanged);
         }
     }
@@ -346,25 +367,50 @@
             var isAdded = await bc.AddBlogComment(comment);
             if (isAdded)
             {
-                message = "";
-                msgClass = "";
-                userComment = "";
-                string notifMsg = $"A new comment was added to a blog post. Kindly check it out ";
-                bool is4Admin = false;
-                string department = "blog";
-                var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
-                await hubConnection.SendAsync("AddComment", comment);
-                if (isNotified.Result)
+                try
                 {
-                    await hubConnection.SendAsync("Notify", "A new notification is added");
+                    message = "";
+                    msgClass = "";
+                    userComment = "";
+                    string notifMsg = $"A new comment was added to a blog post. Kindly check it out ";
+                    bool is4Admin = false;
+                    string department = "blog";
+                    var isNotified = notificationControl.AddNotification(notifMsg, is4Admin, department);
+                    await hubConnection.SendAsync("AddComment", comment);
+                    if (isNotified.Result)
+                    {
+                        await hubConnection.SendAsync("Notify", "A new notification is added");
+                    }
+                    comment = new();
                 }
-                comment = new();
+                catch
+                {
+                    
+                }
             }
         }
         else
         {
             message = "name and comment fields must not be empty";
             msgClass = "red";
+        }
+    }
+    private void CloseDialog()
+    {
+        showDialog = false;
+        deleteId = string.Empty;
+    }
+    private void Delete(string id)
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+            var isDel = bc.DeleteComments(id);
+            if (isDel.Result)
+            {
+                var b = blogComments.Find(x => x.Id == id);
+                blogComments.Remove(b ?? new());
+                CloseDialog();
+            }
         }
     }
     private void Search()

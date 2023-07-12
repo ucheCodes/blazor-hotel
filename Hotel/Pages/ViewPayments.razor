@@ -20,13 +20,11 @@
     <span class="msg @msgClass">@message</span>
     @if (transactionsInfo.Count > 0)
     {
-        message = "";
         <DynamicTables TableTitle="@title" SkipHeaderNames="HeaderNames" TableItems="transactionsInfo" InitializeSortByTime=true />
     }
     else
     {
-        message = "No Verified Transaction yet!!! Try again in a few minutes";
-        msgClass = "red";
+        <p>No verified transaction ...</p>
     }
 </section>
 @code {
@@ -40,7 +38,7 @@
     string message = "";
     string msgClass = "";
     private string title => "Digital Payments : " + transactionsInfo.Count;
-    public List<string> HeaderNames { get; set; } = new();
+    public List<string> HeaderNames { get; set; } = new() { "Domain"};
     protected override async Task OnInitializedAsync()
     {
         var trans = pc.GetPaystackTransactions().Result;
@@ -49,6 +47,11 @@
         if (Id != "" && Id != "id")
         {
             transactionsInfo = TransactionsInfo.Where(t => t.Reference.Equals(Id)).ToList();
+            if (transactionsInfo.Count == 0)
+            {
+                message = "verifying transaction in background, explore other sections of this app and check back in 30 seconds";
+                msgClass = "red";
+            }
         }
         else
         {

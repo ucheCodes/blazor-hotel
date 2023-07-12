@@ -196,8 +196,8 @@ p {
     filter: grayscale(5%);
 }
 
-.slider h1{
-    color: var(--secondary-color);
+.slider h1 {
+    color: white;
     font-size: 2.5rem;
     font-weight: 700;
 }
@@ -471,8 +471,16 @@ p {
     color: var(--text-white);
     border: 0.0625rem solid var(--bg-white);
 }
+.team-img{
+    width: 100%;
+    height: 350px;
+}
+.team-img img{
+    width: 100%;
+    height: 100%;
+}
 
-.gallery-wrapper .gallery-item{
+.gallery-wrapper .gallery-item {
     padding: 5px;
 }
 /*pricing styles*/
@@ -524,21 +532,18 @@ p {
 #rooms-view .row{
     margin:0 .5rem;
 }
-#rooms-view .admin i.fa-edit {
+.admin i.fa-edit {
     margin-left: 30px;
 }
-#rooms-view .admin i:hover {
+.admin i:hover {
     color: var(--secondary-color);
     cursor: pointer;
 }
-
-
-
-    .contact .row {
-        display: flex;
-        flex-wrap: wrap;
-        margin: 0 1.2rem;
-    }
+.contact .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 1.2rem;
+}
 .contact .row div {
     flex-basis: 50%;
 }
