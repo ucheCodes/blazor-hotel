@@ -1,6 +1,7 @@
 C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Release\net6.0\publish\Hotel.exe
 C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Release\net6.0\publish\appsettings.Development.json
 C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Release\net6.0\publish\appsettings.json
+C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Release\net6.0\publish\appsettings.Production.json
 C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Release\net6.0\publish\Hotel.dll
 C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Release\net6.0\publish\Hotel.deps.json
 C:\Users\peter soft\source\repos\Hotel\Hotel\bin\Release\net6.0\publish\Hotel.runtimeconfig.json

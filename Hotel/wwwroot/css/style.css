@@ -264,11 +264,12 @@ p {
     background: var(--bg-white);
     box-shadow: 0 .625rem .9375rem 0 rgb(0 0 0 / 10%);
     position: absolute;
-    bottom: -20%;
+    bottom: -10%;
     left: 50%;
     transform: translateX(-50%);
     padding: 3.125rem 1.875rem;
     z-index: 20;
+/*    margin-bottom: 1rem;*/
 }
 .booking-area .form-control, .booking-area .form-select{
     border: .0625rem solid var(--primary-color);
@@ -903,13 +904,20 @@ textarea {
     transform: translate(-50%, -50%);
     position: fixed;
     border-radius: 10px;
-    background-color: var(--primary-color);
+    background-color: var(--bg-black);
 }
 .dialog input, .dialog button,
 .dialog .msg, .dialog select{
     padding: 4px;
     margin: 4px;
     width: 100%;
+}
+.dialog input, .dialog select{
+    background-color: transparent;
+    color: white;
+}
+.dialog select option{
+    color: black;
 }
 .dialog .close{
     position: absolute;
@@ -919,7 +927,7 @@ textarea {
     font-weight: 600;
     font-size:15px;
 }
-.dialog h3, .dialog button {
+.dialog h3, .dialog button{
     color: white;
 }
 .dialog .close:hover{
@@ -927,6 +935,7 @@ textarea {
 }
 .dialog span {
     cursor: pointer;
+    color: white;
 }
 
 
@@ -990,7 +999,7 @@ textarea {
 }
 .footer-wrapper .form-control {
     color: var(--text-white);
-    margin: 2px 0;
+    margin: 5px 0;
 }
 .footer-wrapper .form-control:focus {
     outline: none;

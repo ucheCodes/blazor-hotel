@@ -169,7 +169,8 @@
 
         if (TransactionsInfo.Count > 0)
         {
-            List<TransactionInfo> delTrans = TransactionsInfo.Where(t => (DateTime.Now.Subtract(t.Date)).TotalDays >= 30).ToList();
+            List<TransactionInfo> delTrans = TransactionsInfo.Where(t => 
+                (DateTime.Now.Subtract(t.Date)).TotalDays >= 14 && (t.Status == "failed" || t.Status == "abandoned")).ToList();
             if (delTrans.Count > 0)
             {
                 foreach (var trans in delTrans)

@@ -75,7 +75,7 @@
 @media (max-width: 991px) {
     section {
         padding: 1.875rem 0;
-        margin-left: 3rem;
+        margin: 0 .1rem;
     }
     .header-scrolled {
         height: auto;
@@ -157,7 +157,7 @@
     }
 
     .booking-area {
-        bottom: -40%;
+        bottom: -25%;
     }
 
     .slider h1 {
@@ -181,7 +181,7 @@
         width: 23%;
     }
     .kitchen .row {
-        margin-top: 14rem;
+        margin-top: 21rem;
     }
     .team-wrapper .row .alter{
         margin-top: 3.5rem;

@@ -17,7 +17,7 @@
             <div class="col-lg-5 position-relative">
                 <div class="service-menu-area">
                     <ul class="nav">
-                        <li @onclick='(() => ToggleImage("spa"))'>
+                        <li @onclick='(() => {activeImg = "./images/services/spa.jpg";})'>
                             <a class="active service-list">
                                 <span class="service-icon">
                                     <img src="./images/services/service-icon1.webp" alt="serv1">
@@ -31,7 +31,7 @@
                                 </p>
                             </a>
                         </li>
-                        <li @onclick='(() => ToggleImage("restaurant"))'>
+                        <li @onclick='(() => {activeImg = "./images/services/restaurant.jpg";})'>
                             <a data-bs-toggle="tab">
                                 <span class="service-icon">
                                     <img src="./images/services/service-icon2.webp" alt="serv1">
@@ -46,7 +46,7 @@
                                 </p>
                             </a>
                         </li>
-                        <li @onclick='(() => ToggleImage("swimming"))'>
+                        <li @onclick='(() => {activeImg = "./images/services/swimming.jpg";})'>
                             <a data-bs-toggle="tab">
                                 <span class="service-icon">
                                     <img src="./images/services/service-icon3.webp" alt="serv1">
@@ -61,7 +61,7 @@
                                 </p>
                             </a>
                         </li>
-                        <li @onclick='(() => ToggleImage("conference"))'>
+                        <li @onclick='(() => {activeImg = "./images/services/conf1.jpg";})'>
                             <a data-bs-toggle="tab">
                                 <span class="service-icon">
                                     <img src="./images/services/service-icon4.webp" alt="serv1">
@@ -157,7 +157,6 @@
     private void EndCount()
     {
         cts?.Cancel();
-        Console.WriteLine("endin ...");
     }
 
     private async Task AnimateCounter(int start, int end, int duration, Action<int> updateAction)
